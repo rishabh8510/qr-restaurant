@@ -1,6 +1,8 @@
 const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ||
-  (typeof window !== 'undefined' ? '/api' : 'http://localhost:5000/api');
+  process.env.NODE_ENV === 'production' && typeof window !== 'undefined'
+    ? '/api'
+    : process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ||
+      (typeof window !== 'undefined' ? '/api' : 'http://localhost:5000/api');
 
 export type PublicCategory = {
   id: string;

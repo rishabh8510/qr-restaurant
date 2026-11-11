@@ -78,6 +78,9 @@ const STATUS: Record<
 };
 
 function getSocketUrl() {
+  if (import.meta.env.PROD) {
+    return window.location.origin;
+  }
   const env = (import.meta as ImportMeta & { env?: { VITE_API_URL?: string } }).env
     ?.VITE_API_URL;
   if (env) return env.replace(/\/api\/?$/, '');
