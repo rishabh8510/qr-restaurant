@@ -4,7 +4,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm ci && npm cache clean --force
 
 # Rebuild the source code only when needed
 FROM node:20-alpine AS builder

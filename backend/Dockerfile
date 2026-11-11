@@ -1,7 +1,7 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json tsconfig.json ./
-RUN npm ci
+RUN npm ci && npm cache clean --force
 COPY . .
 RUN npm run build
 
@@ -12,7 +12,7 @@ WORKDIR /app
 RUN apk add --no-cache libc6-compat
 
 COPY package*.json ./
-RUN npm ci --omit=dev && npm install sequelize-cli typescript
+RUN npm ci --omit=dev && npm install sequelize-cli typescript && npm cache clean --force
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/config ./config

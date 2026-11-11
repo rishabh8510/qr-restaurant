@@ -10,7 +10,7 @@ import React, {
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
-  "http://localhost:5000/api";
+  (typeof window !== "undefined" ? "/api" : "http://localhost:5000/api");
 
 type User = {
   id: string;

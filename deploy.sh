@@ -35,11 +35,45 @@ else
 fi
 
 # 2. Check if Docker Compose plugin is installed
-if ! docker compose version &> /dev/null; then
+if ! docker compose version &> /dev/null && ! sudo docker compose version &> /dev/null; then
     echo -e "${YELLOW}Docker Compose plugin is not installed. Installing...${NC}"
     sudo apt-get update && sudo apt-get install -y docker-compose-plugin || true
 else
     echo -e "${GREEN}✔ Docker Compose is ready.${NC}"
+fi
+
+# Ensure current user can communicate with Docker daemon
+if ! docker info &> /dev/null; then
+    echo -e "${YELLOW}Configuring Docker daemon permissions for current user...${NC}"
+    sudo usermod -aG docker "$USER" 2>/dev/null || true
+    sudo chmod 666 /var/run/docker.sock 2>/dev/null || true
+fi
+
+# Configure 2GB Swap space if memory is low (critical for AWS EC2 instances like t2/t3.micro/small)
+SWAP_TOTAL=$(free -m | awk '/^Swap:/ {print $2}')
+if [ "${SWAP_TOTAL:-0}" -lt 1024 ]; then
+    echo -e "${YELLOW}Enabling 2GB Swap memory to prevent build freezing on AWS EC2...${NC}"
+    if [ ! -f /swapfile ]; then
+        sudo fallocate -l 2G /swapfile 2>/dev/null || sudo dd if=/dev/zero of=/swapfile bs=1M count=2048 2>/dev/null || true
+        if [ -f /swapfile ]; then
+            sudo chmod 600 /swapfile
+            sudo mkswap /swapfile 2>/dev/null || true
+            sudo swapon /swapfile 2>/dev/null || true
+            echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab > /dev/null 2>&1 || true
+            echo -e "${GREEN}✔ 2GB Swap memory successfully activated.${NC}"
+        fi
+    else
+        sudo swapon /swapfile 2>/dev/null || true
+    fi
+fi
+
+# Determine whether docker or sudo docker is needed
+if docker info &> /dev/null; then
+    COMPOSE_CMD="docker compose"
+elif sudo docker info &> /dev/null; then
+    COMPOSE_CMD="sudo docker compose"
+else
+    COMPOSE_CMD="docker compose"
 fi
 
 # 3. Handle .env file (root directory)
@@ -81,13 +115,25 @@ else
 fi
 
 # 4. Stop any conflicting local processes or old containers if running
-echo -e "${BLUE}Building and launching Docker containers...${NC}"
-docker compose down || true
+echo -e "${BLUE}Cleaning dangling cache and preparing build...${NC}"
+$COMPOSE_CMD down || true
+sudo docker builder prune -f >/dev/null 2>&1 || true
 
-# 5. Build and launch all services
-docker compose up -d --build
+# 5. Build services sequentially (prevents running out of disk/RAM on AWS EC2)
+echo -e "${YELLOW}Building Backend container...${NC}"
+$COMPOSE_CMD build backend
 
-# 6. Wait for database and backend initialization
+echo -e "${YELLOW}Building Admin Frontend container...${NC}"
+$COMPOSE_CMD build frontend
+
+echo -e "${YELLOW}Building Customer Website container...${NC}"
+$COMPOSE_CMD build website
+
+# 6. Launch all services
+echo -e "${BLUE}Launching all containers...${NC}"
+$COMPOSE_CMD up -d
+
+# 7. Wait for database and backend initialization
 echo -e "${YELLOW}Waiting for services to initialize...${NC}"
 sleep 10
 
