@@ -3,8 +3,12 @@ node_modules/
 .pnp
 .pnp.js
 
-# Next.js build output
-.next/
+# Next.js build output: ignore dev cache, keep only standalone and static
+.next/*
+!.next/standalone
+!.next/standalone/**
+!.next/static
+!.next/static/**
 out/
 build/
 dist/

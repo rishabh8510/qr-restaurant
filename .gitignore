@@ -9,11 +9,21 @@ node_modules/
 !.env.example
 
 # Production builds
-dist/
 build/
-.next/
 out/
 coverage/
+
+# Next.js build: ignore dev cache, keep only standalone and static
+.next/*
+!.next/standalone
+!.next/standalone/**
+!.next/static
+!.next/static/**
+website/.next/*
+!website/.next/standalone
+!website/.next/standalone/**
+!website/.next/static
+!website/.next/static/**
 
 # TypeScript cache
 *.tsbuildinfo

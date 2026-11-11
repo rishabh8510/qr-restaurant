@@ -1,23 +1,17 @@
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json tsconfig.json ./
-RUN npm ci && npm cache clean --force
-COPY . .
-RUN npm run build
-
 FROM node:20-alpine
 WORKDIR /app
 
-# Install dependencies required by node-gyp or argon2 if needed
+# Install native runtime dependencies
 RUN apk add --no-cache libc6-compat
 
 COPY package*.json ./
-RUN npm ci --omit=dev && npm install sequelize-cli typescript && npm cache clean --force
+RUN npm ci --omit=dev && npm install sequelize-cli && npm cache clean --force
 
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/config ./config
-COPY --from=builder /app/migrations ./migrations
-COPY --from=builder /app/seeders ./seeders
+# Copy pre-compiled code and configuration
+COPY dist ./dist
+COPY config ./config
+COPY migrations ./migrations
+COPY seeders ./seeders
 COPY start.sh ./
 RUN chmod +x ./start.sh
 

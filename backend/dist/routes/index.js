@@ -1,0 +1,33 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_routes_1 = __importDefault(require("./auth.routes"));
+const staff_routes_1 = __importDefault(require("./staff.routes"));
+const category_routes_1 = __importDefault(require("./category.routes"));
+const subCategory_routes_1 = __importDefault(require("./subCategory.routes"));
+const product_routes_1 = __importDefault(require("./product.routes"));
+const offer_routes_1 = __importDefault(require("./offer.routes"));
+const restaurant_routes_1 = __importDefault(require("./restaurant.routes"));
+const dashboard_routes_1 = __importDefault(require("./dashboard.routes"));
+const public_routes_1 = __importDefault(require("./public.routes"));
+const banner_routes_1 = __importDefault(require("./banner.routes"));
+const dishOfTheDay_routes_1 = __importDefault(require("./dishOfTheDay.routes"));
+const order_routes_1 = __importDefault(require("./order.routes"));
+const router = (0, express_1.Router)();
+router.use('/auth', auth_routes_1.default);
+router.use('/staff', staff_routes_1.default);
+router.use('/categories', category_routes_1.default);
+router.use('/sub-categories', subCategory_routes_1.default);
+router.use('/products', product_routes_1.default);
+router.use('/offers', offer_routes_1.default);
+router.use('/restaurant', restaurant_routes_1.default);
+router.use('/dashboard', dashboard_routes_1.default);
+router.use('/public', public_routes_1.default);
+router.use('/banners', banner_routes_1.default);
+router.use('/dish-of-the-day', dishOfTheDay_routes_1.default);
+router.use('/orders', order_routes_1.default);
+exports.default = router;
+//# sourceMappingURL=index.js.map

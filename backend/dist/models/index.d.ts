@@ -1,0 +1,31 @@
+import { sequelize } from '../config/database';
+import { User } from './User';
+import { RefreshToken } from './RefreshToken';
+import { Restaurant } from './Restaurant';
+import { Category } from './Category';
+import { SubCategory } from './SubCategory';
+import { Product } from './Product';
+import { Offer } from './Offer';
+import { Order } from './Order';
+import { Banner } from './Banner';
+import { DishOfTheDay } from './DishOfTheDay';
+import { ProductLike } from './ProductLike';
+import { Otp } from './Otp';
+export { sequelize, User, RefreshToken, Restaurant, Category, SubCategory, Product, Offer, Order, Banner, DishOfTheDay, Otp, ProductLike };
+declare const _default: {
+    sequelize: import("sequelize").Sequelize;
+    User: typeof User;
+    RefreshToken: typeof RefreshToken;
+    Restaurant: typeof Restaurant;
+    Category: typeof Category;
+    SubCategory: typeof SubCategory;
+    Product: typeof Product;
+    Offer: typeof Offer;
+    Order: typeof Order;
+    Banner: typeof Banner;
+    DishOfTheDay: typeof DishOfTheDay;
+    Otp: typeof Otp;
+    ProductLike: typeof ProductLike;
+};
+export default _default;
+//# sourceMappingURL=index.d.ts.map

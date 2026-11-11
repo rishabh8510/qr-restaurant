@@ -4,11 +4,6 @@ npm-debug.log
 .gitignore
 .env
 .env.*
-dist
-build
-.next
-out
-coverage
 Archive.zip
 *.zip
 *.log

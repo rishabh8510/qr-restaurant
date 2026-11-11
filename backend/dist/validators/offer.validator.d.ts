@@ -1,0 +1,84 @@
+import { z } from 'zod';
+export declare const createOfferSchema: z.ZodObject<{
+    title: z.ZodString;
+    description: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+    discountType: z.ZodEnum<["percentage", "fixed"]>;
+    discountValue: z.ZodNumber;
+    startDate: z.ZodUnion<[z.ZodString, z.ZodDate]>;
+    endDate: z.ZodUnion<[z.ZodString, z.ZodDate]>;
+    isActive: z.ZodOptional<z.ZodBoolean>;
+    applicableTo: z.ZodOptional<z.ZodEnum<["all", "products", "categories"]>>;
+    productIds: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+    categoryIds: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+    offerKind: z.ZodOptional<z.ZodEnum<["menu", "loyalty"]>>;
+    minOrderCount: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
+}, "strip", z.ZodTypeAny, {
+    title: string;
+    discountType: "fixed" | "percentage";
+    discountValue: number;
+    startDate: string | Date;
+    endDate: string | Date;
+    isActive?: boolean | undefined;
+    description?: string | null | undefined;
+    productIds?: string[] | null | undefined;
+    categoryIds?: string[] | null | undefined;
+    offerKind?: "menu" | "loyalty" | undefined;
+    minOrderCount?: number | null | undefined;
+    applicableTo?: "categories" | "products" | "all" | undefined;
+}, {
+    title: string;
+    discountType: "fixed" | "percentage";
+    discountValue: number;
+    startDate: string | Date;
+    endDate: string | Date;
+    isActive?: boolean | undefined;
+    description?: string | null | undefined;
+    productIds?: string[] | null | undefined;
+    categoryIds?: string[] | null | undefined;
+    offerKind?: "menu" | "loyalty" | undefined;
+    minOrderCount?: number | null | undefined;
+    applicableTo?: "categories" | "products" | "all" | undefined;
+}>;
+export declare const updateOfferSchema: z.ZodObject<{
+    title: z.ZodOptional<z.ZodString>;
+    description: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+    discountType: z.ZodOptional<z.ZodEnum<["percentage", "fixed"]>>;
+    discountValue: z.ZodOptional<z.ZodNumber>;
+    startDate: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodDate]>>;
+    endDate: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodDate]>>;
+    isActive: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
+    applicableTo: z.ZodOptional<z.ZodOptional<z.ZodEnum<["all", "products", "categories"]>>>;
+    productIds: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
+    categoryIds: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
+    offerKind: z.ZodOptional<z.ZodOptional<z.ZodEnum<["menu", "loyalty"]>>>;
+    minOrderCount: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodNumber>>>;
+}, "strip", z.ZodTypeAny, {
+    isActive?: boolean | undefined;
+    description?: string | null | undefined;
+    productIds?: string[] | null | undefined;
+    categoryIds?: string[] | null | undefined;
+    offerKind?: "menu" | "loyalty" | undefined;
+    minOrderCount?: number | null | undefined;
+    title?: string | undefined;
+    discountType?: "fixed" | "percentage" | undefined;
+    discountValue?: number | undefined;
+    startDate?: string | Date | undefined;
+    endDate?: string | Date | undefined;
+    applicableTo?: "categories" | "products" | "all" | undefined;
+}, {
+    isActive?: boolean | undefined;
+    description?: string | null | undefined;
+    productIds?: string[] | null | undefined;
+    categoryIds?: string[] | null | undefined;
+    offerKind?: "menu" | "loyalty" | undefined;
+    minOrderCount?: number | null | undefined;
+    title?: string | undefined;
+    discountType?: "fixed" | "percentage" | undefined;
+    discountValue?: number | undefined;
+    startDate?: string | Date | undefined;
+    endDate?: string | Date | undefined;
+    applicableTo?: "categories" | "products" | "all" | undefined;
+}>;
+export type CreateOfferInput = z.infer<typeof createOfferSchema>;
+export type UpdateOfferInput = z.infer<typeof updateOfferSchema>;
+//# sourceMappingURL=offer.validator.d.ts.map

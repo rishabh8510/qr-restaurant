@@ -4,8 +4,6 @@ npm-debug.log
 .gitignore
 .env
 .env.*
-dist
-dist-ssr
 Archive.zip
 *.zip
 *.log
