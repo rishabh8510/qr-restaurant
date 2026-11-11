@@ -13,17 +13,13 @@ build/
 out/
 coverage/
 
-# Next.js build: ignore dev cache, keep only standalone and static
-.next/*
-!.next/standalone
-!.next/standalone/**
-!.next/static
-!.next/static/**
-website/.next/*
-!website/.next/standalone
-!website/.next/standalone/**
-!website/.next/static
-!website/.next/static/**
+# Next.js build: ignore dev and cache, keep production build
+.next/cache/
+.next/dev/
+.next/diagnostics/
+website/.next/cache/
+website/.next/dev/
+website/.next/diagnostics/
 
 # TypeScript cache
 *.tsbuildinfo

@@ -1,22 +1,17 @@
-FROM node:20-alpine AS runner
+FROM node:20-alpine
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Install production dependencies for Linux
+COPY package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
 
-# Copy pre-compiled standalone Next.js build
-COPY --chown=nextjs:nodejs public ./public
-COPY --chown=nextjs:nodejs .next/standalone ./
-COPY --chown=nextjs:nodejs .next/static ./.next/static
-
-USER nextjs
+# Copy pre-compiled production build & static assets
+COPY .next ./.next
+COPY public ./public
 
 EXPOSE 3000
 
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-
-CMD ["node", "server.js"]
+CMD ["npx", "next", "start", "-p", "3000"]

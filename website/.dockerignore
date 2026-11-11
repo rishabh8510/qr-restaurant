@@ -4,6 +4,8 @@ npm-debug.log
 .gitignore
 .env
 .env.*
+.next/cache
+.next/dev
 out
 build
 Archive.zip

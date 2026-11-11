@@ -20,15 +20,17 @@ echo -e "\n${YELLOW}2/3 Building Frontend Admin Panel...${NC}"
 cd frontend && npm run build && cd ..
 echo -e "${GREEN}✔ Frontend build complete.${NC}"
 
-# 3. Build Customer Website (Next.js Standalone)
-echo -e "\n${YELLOW}3/3 Building Website Next.js Standalone...${NC}"
-cd website && npm run build && cd ..
+# 3. Build Customer Website
+echo -e "\n${YELLOW}3/3 Building Website Next.js Production...${NC}"
+cd website && npm run build
+rm -rf .next/dev .next/cache .next/diagnostics .next/standalone
+cd ..
 echo -e "${GREEN}✔ Website build complete.${NC}"
 
 echo -e "\n${BLUE}======================================================${NC}"
 echo -e "${GREEN}   🎉 All Builds Completed Successfully in Seconds!  ${NC}"
 echo -e "${BLUE}======================================================${NC}"
 echo -e "Now simply push the ready builds to your server:"
-echo -e "  1. ${YELLOW}git add -A && git commit -m \"Production build\" && git push${NC}"
+echo -e "  1. ${YELLOW}git add -A && git commit -m \"Production build\" && git push origin main${NC}"
 echo -e "  2. On your AWS server terminal run:"
 echo -e "     ${GREEN}git pull && sudo bash deploy.sh${NC}"
