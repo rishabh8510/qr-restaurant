@@ -49,22 +49,13 @@ if ! docker info &> /dev/null; then
     sudo chmod 666 /var/run/docker.sock 2>/dev/null || true
 fi
 
-# Configure 2GB Swap space if memory is low (critical for AWS EC2 instances like t2/t3.micro/small)
-SWAP_TOTAL=$(free -m | awk '/^Swap:/ {print $2}')
-if [ "${SWAP_TOTAL:-0}" -lt 1024 ]; then
-    echo -e "${YELLOW}Enabling 2GB Swap memory to prevent build freezing on AWS EC2...${NC}"
-    if [ ! -f /swapfile ]; then
-        sudo fallocate -l 2G /swapfile 2>/dev/null || sudo dd if=/dev/zero of=/swapfile bs=1M count=2048 2>/dev/null || true
-        if [ -f /swapfile ]; then
-            sudo chmod 600 /swapfile
-            sudo mkswap /swapfile 2>/dev/null || true
-            sudo swapon /swapfile 2>/dev/null || true
-            echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab > /dev/null 2>&1 || true
-            echo -e "${GREEN}✔ 2GB Swap memory successfully activated.${NC}"
-        fi
-    else
-        sudo swapon /swapfile 2>/dev/null || true
-    fi
+# Free up disk space if an unnecessary swapfile exists (saves 2GB on small 8GB EC2 disk)
+if [ -f /swapfile ]; then
+    echo -e "${YELLOW}Freeing up 2GB disk space by removing swapfile...${NC}"
+    sudo swapoff /swapfile 2>/dev/null || true
+    sudo rm -f /swapfile 2>/dev/null || true
+    sudo sed -i '/swapfile/d' /etc/fstab 2>/dev/null || true
+    echo -e "${GREEN}✔ 2GB disk space reclaimed.${NC}"
 fi
 
 # Determine whether docker or sudo docker is needed
