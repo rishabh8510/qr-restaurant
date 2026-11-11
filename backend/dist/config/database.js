@@ -7,7 +7,10 @@ const env_1 = require("./env");
 exports.sequelize = new sequelize_1.Sequelize(env_1.env.DATABASE_URL, {
     dialect: 'postgres',
     logging: env_1.env.NODE_ENV === 'development' ? console.log : false,
-    dialectOptions: env_1.env.NODE_ENV === 'production'
+    dialectOptions: env_1.env.NODE_ENV === 'production' &&
+        !env_1.env.DATABASE_URL.includes('@db:') &&
+        !env_1.env.DATABASE_URL.includes('@localhost') &&
+        !env_1.env.DATABASE_URL.includes('@127.0.0.1')
         ? {
             ssl: {
                 require: true,

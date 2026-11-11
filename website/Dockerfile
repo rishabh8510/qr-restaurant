@@ -8,9 +8,9 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy pre-compiled standalone Next.js build
-COPY public ./public
-COPY .next/standalone ./
-COPY .next/static ./.next/static
+COPY --chown=nextjs:nodejs public ./public
+COPY --chown=nextjs:nodejs .next/standalone ./
+COPY --chown=nextjs:nodejs .next/static ./.next/static
 
 USER nextjs
 
