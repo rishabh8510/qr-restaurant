@@ -12,6 +12,7 @@ COPY dist ./dist
 COPY config ./config
 COPY migrations ./migrations
 COPY seeders ./seeders
+COPY seed-dummy-data.js ./
 COPY start.sh ./
 RUN chmod +x ./start.sh
 
