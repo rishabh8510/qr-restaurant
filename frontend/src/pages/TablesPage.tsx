@@ -30,16 +30,28 @@ export function TablesPage() {
   const restaurantName = restData?.data?.name || 'Cafe & Restaurant';
 
   const [baseUrl, setBaseUrl] = useState(() => {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('cafe_qr_base_url') : null;
-    if (saved && !saved.includes('localhost') && !saved.includes('127.0.0.1')) {
-      return saved;
-    }
     if (typeof window !== 'undefined') {
-      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-        return window.location.origin;
+      const isLocal =
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname.startsWith('192.168.') ||
+        window.location.hostname.startsWith('10.');
+
+      const saved = localStorage.getItem('cafe_qr_base_url');
+      if (saved) {
+        const savedIsLocal =
+          saved.includes('localhost') || saved.includes('127.0.0.1') || saved.includes('192.168.');
+        if (isLocal === savedIsLocal) {
+          return saved;
+        }
       }
+
+      if (isLocal) {
+        return `${window.location.protocol}//${window.location.hostname}:3000`;
+      }
+      return window.location.origin;
     }
-    return 'https://lotushut.bluewebspark.com';
+    return 'http://localhost:3000';
   });
 
   const [copied, setCopied] = useState(false);
