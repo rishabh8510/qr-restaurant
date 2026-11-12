@@ -9,10 +9,11 @@ import React, {
 } from "react";
 
 const API_BASE =
-  process.env.NODE_ENV === "production" && typeof window !== "undefined"
+  typeof window !== "undefined"
     ? "/api"
-    : process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
-      (typeof window !== "undefined" ? "/api" : "http://localhost:5000/api");
+    : process.env.INTERNAL_API_URL ||
+      process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
+      "http://backend:5000/api";
 
 type User = {
   id: string;

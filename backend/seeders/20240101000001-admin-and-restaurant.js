@@ -32,13 +32,13 @@ module.exports = {
     await queryInterface.bulkInsert('restaurants', [
       {
         id: restaurantId,
-        name: 'Demo Restaurant',
-        description: 'A sample restaurant for the admin dashboard',
-        logo: null,
+        name: 'Lotus Hut',
+        description: 'Lotus Hut Cafe & Bistro',
+        logo: '/logo.jpeg',
         cover_image: null,
-        address: '123 Main Street, City',
-        phone: '+1234567890',
-        email: 'contact@restaurant.com',
+        address: 'MG Road, Bhopal, Madhya Pradesh 462001',
+        phone: '+91 98765 43210',
+        email: 'contact@lotushut.com',
         opening_hours: JSON.stringify({
           monday: '09:00-22:00',
           tuesday: '09:00-22:00',

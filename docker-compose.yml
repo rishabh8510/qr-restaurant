@@ -34,8 +34,8 @@ services:
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-jwt_refresh_super_secret_key_12345_67890}
       AES_SECRET_KEY: ${AES_SECRET_KEY:-aes_secret_key_super_secret_12345_67890}
       COOKIE_SECRET: ${COOKIE_SECRET:-cookie_super_secret_key_12345_67890}
-      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
-      WEBSITE_URL: ${WEBSITE_URL:-http://localhost}
+      FRONTEND_URL: ${FRONTEND_URL:-https://lotushut.bluewebspark.com/admin}
+      WEBSITE_URL: ${WEBSITE_URL:-https://lotushut.bluewebspark.com}
       ADMIN_NAME: ${ADMIN_NAME:-Admin User}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@restaurant.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin@123456}
@@ -60,6 +60,7 @@ services:
     restart: unless-stopped
     environment:
       NEXT_PUBLIC_API_URL: /api
+      INTERNAL_API_URL: http://backend:5000/api
       PORT: 3000
     depends_on:
       - backend

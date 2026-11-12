@@ -16,8 +16,11 @@ const rubik = Rubik({
 });
 
 export const metadata: Metadata = {
-  title: "My Website",
-  description: "My Next.js Website",
+  title: "Lotus Hut - Cafe & Bistro",
+  description: "Lotus Hut Cafe & Bistro Digital Menu & Online Ordering",
+  icons: {
+    icon: "/logo.jpeg",
+  },
 };
 
 export default function RootLayout({

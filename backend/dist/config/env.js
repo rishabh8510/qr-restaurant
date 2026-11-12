@@ -48,7 +48,11 @@ if (!parsed.success) {
 }
 exports.env = parsed.data;
 function getAllowedOrigins() {
-    const list = [exports.env.FRONTEND_URL];
+    const list = [
+        exports.env.FRONTEND_URL,
+        'https://lotushut.bluewebspark.com',
+        'http://lotushut.bluewebspark.com',
+    ];
     if (exports.env.WEBSITE_URL)
         list.push(exports.env.WEBSITE_URL);
     // Also allow common local website ports

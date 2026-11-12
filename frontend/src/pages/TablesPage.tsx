@@ -30,12 +30,16 @@ export function TablesPage() {
   const restaurantName = restData?.data?.name || 'Cafe & Restaurant';
 
   const [baseUrl, setBaseUrl] = useState(() => {
-    return (
-      localStorage.getItem('cafe_qr_base_url') ||
-      (typeof window !== 'undefined'
-        ? `${window.location.protocol}//${window.location.hostname}:3000`
-        : 'http://localhost:3000')
-    );
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('cafe_qr_base_url') : null;
+    if (saved && !saved.includes('localhost') && !saved.includes('127.0.0.1')) {
+      return saved;
+    }
+    if (typeof window !== 'undefined') {
+      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        return window.location.origin;
+      }
+    }
+    return 'https://lotushut.bluewebspark.com';
   });
 
   const [copied, setCopied] = useState(false);
@@ -140,9 +144,11 @@ export function TablesPage() {
 
             {/* Restaurant Brand Title */}
             <div className="mb-6 flex flex-col items-center">
-              <div className="mb-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-900 text-white shadow-md">
-                <UtensilsCrossed className="h-7 w-7 text-amber-400" />
-              </div>
+              <img
+                src="/logo.jpeg"
+                alt="Lotus Hut"
+                className="mb-2 h-16 w-16 rounded-full object-cover shadow-md ring-2 ring-red-100"
+              />
               <h2 className="text-2xl font-black tracking-tight text-gray-900">
                 {restaurantName}
               </h2>

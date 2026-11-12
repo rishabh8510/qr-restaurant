@@ -51,12 +51,12 @@ export function LoginPage() {
       <div className="w-full max-w-md">
         {/* Brand header */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-900 text-white shadow-lg ring-4 ring-gray-100">
-            <UtensilsCrossed className="h-7 w-7 text-amber-400" />
+          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full overflow-hidden shadow-lg ring-4 ring-red-100">
+            <img src="/logo.jpeg" alt="Lotus Hut" className="h-full w-full object-cover" />
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-gray-900">Restaurant POS</h1>
+          <h1 className="text-2xl font-black tracking-tight text-gray-900">Lotus Hut</h1>
           <p className="mt-1 text-xs font-semibold text-gray-500">
-            Enterprise Admin &amp; Kitchen Management System
+            Admin &amp; Kitchen Management System
           </p>
         </div>
 

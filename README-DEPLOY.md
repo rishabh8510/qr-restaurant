@@ -1,6 +1,6 @@
 # 🚀 AWS Single-Command Deployment Guide
 
-This project is configured with a fully automated, production-ready Docker Compose & Nginx setup. You can deploy the entire stack (Database, Backend, Admin Panel, Customer Website, and Nginx reverse proxy) to any AWS EC2 instance with a **single command**.
+This project is configured with a fully automated, production-ready Docker Compose & Nginx setup configured for the custom domain **`lotushut.bluewebspark.com`**. You can deploy the entire stack (Database, Backend, Admin Panel, Customer Website, and Nginx reverse proxy) to any AWS EC2 instance with a **single command**.
 
 ---
 
@@ -12,6 +12,8 @@ This project is configured with a fully automated, production-ready Docker Compo
      - Port `22` (SSH)
      - Port `80` (HTTP)
      - Port `443` (HTTPS)
+2. **DNS Configuration**:
+   - Point an **A Record** for `lotushut.bluewebspark.com` to your AWS EC2 Public IPv4 Address in your DNS provider (e.g. Cloudflare, Route53, GoDaddy).
 
 ---
 
@@ -27,7 +29,7 @@ ssh -i your-key.pem ubuntu@your-ec2-public-ip
 git clone <your-repository-url> app
 cd app
 ```
-*(Or upload this project folder to your EC2 instance)*
+*(Or if already cloned, run: `git pull`)*
 
 ### Step 3: Run the Single Deployment Command
 ```bash
@@ -36,30 +38,26 @@ bash deploy.sh
 
 ---
 
-## 🛠️ What `deploy.sh` Does Automatically:
-1. **Installs Docker & Docker Compose** if not already installed.
-2. **Generates a secure `.env` file** with randomized passwords, JWT access & refresh secrets, and cookie secrets.
-3. **Creates & Configures PostgreSQL 16**: Sets up persistent storage and a healthcheck.
-4. **Builds all applications**:
-   - **Backend**: Compiles TypeScript, runs migrations (`db:migrate`) and initial seeds (`db:seed:all`) automatically.
-   - **Admin Dashboard**: Multi-stage build with Vite and internal routing.
-   - **Customer Website**: Production standalone build with Next.js.
-5. **Configures Nginx Reverse Proxy**:
-   - `http://<your-ec2-ip>/` ➡️ **Customer Website**
-   - `http://<your-ec2-ip>/admin/` ➡️ **Admin Panel Dashboard**
-   - `http://<your-ec2-ip>/api/` ➡️ **Backend REST APIs**
-   - `http://<your-ec2-ip>/socket.io/` ➡️ **Real-time WebSockets**
+## 🌐 Application Access Endpoints
+- 🌐 **Customer Website**: `https://lotushut.bluewebspark.com/` (or `http://lotushut.bluewebspark.com/`)
+- ⚙️ **Admin Dashboard**: `https://lotushut.bluewebspark.com/admin/`
+- 📡 **Backend REST API**: `https://lotushut.bluewebspark.com/api/`
+- 🔌 **Real-time WebSockets**: `https://lotushut.bluewebspark.com/socket.io/`
 
 ---
 
 ## 🔑 Default Admin Login
-- **URL**: `http://<your-ec2-ip>/admin/`
+- **URL**: `https://lotushut.bluewebspark.com/admin/`
 - **Email**: `admin@restaurant.com`
 - **Password**: `Admin@123456`
 
 ---
 
 ## 📊 Useful Docker Commands on the Server
+- Sync Menu Items from Image:
+  ```bash
+  sudo ./sync-menu.sh
+  ```
 - View live logs:
   ```bash
   docker compose logs -f

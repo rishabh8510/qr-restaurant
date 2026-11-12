@@ -86,15 +86,15 @@ export default function LoginModal() {
       <div className="p-6 sm:p-8">
         {/* Header */}
         <div className="flex flex-col items-center text-center">
-          <div className="mb-3 flex h-13 w-13 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 ring-1 ring-amber-100">
-            {step === "phone" ? <FiPhone size={22} /> : <FiLock size={22} />}
+          <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full overflow-hidden shadow-md ring-2 ring-red-100">
+            <img src="/logo.jpeg" alt="Lotus Hut" className="h-full w-full object-cover" />
           </div>
           <h2 className="text-xl font-bold tracking-tight text-gray-900">
-            {step === "phone" ? "Sign in with Mobile" : "Verify OTP"}
+            {step === "phone" ? "Sign in to Lotus Hut" : "Verify OTP"}
           </h2>
           <p className="mt-1 text-xs text-gray-500">
             {step === "phone"
-              ? "Fast, frictionless ordering with your phone"
+              ? "Fast, frictionless ordering with your mobile number"
               : `Enter the 6-digit code sent to ${phone}`}
           </p>
         </div>

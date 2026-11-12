@@ -95,12 +95,14 @@ export function DashboardLayout() {
         {/* Brand Header */}
         <div className="flex h-18 shrink-0 items-center justify-between border-b border-slate-800/80 px-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-stone-950 shadow-lg shadow-amber-500/20 font-black">
-              <Coffee className="h-5 w-5" />
-            </div>
+            <img
+              src="/logo.jpeg"
+              alt="Lotus Hut"
+              className="h-10 w-10 shrink-0 rounded-full object-cover shadow-md shadow-red-950/40 ring-2 ring-red-500/40"
+            />
             <div>
               <p className="text-sm font-black tracking-tight text-white leading-none">
-                RESTAURANT POS
+                LOTUS HUT
               </p>
               <div className="mt-1 flex items-center gap-1.5 text-[10px] font-semibold text-emerald-400">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />

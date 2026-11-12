@@ -6,7 +6,7 @@ import { FiClock, FiPhone, FiMapPin } from "react-icons/fi";
 import { FaInstagram, FaTelegramPlane, FaWhatsapp } from "react-icons/fa";
 
 const fullText =
-  "Restaurant \"Demo Digital Menu\", located in the heart of the city, invites you to feel like royalty and savor the finest dishes from North Indian, South Indian, and Mughlai cuisines. Along with delicious and affordably priced dishes and beverages, every Friday and Saturday you'll enjoy live music that creates a warm, cozy atmosphere for relaxing with family and friends.";
+  "Lotus Hut Cafe & Bistro invites you to savor our freshly grilled sandwiches, cheesy open toasts, loaded pizzas, rich pastas, comforting Maggi noodles, artisanal coffees, and thick gourmet milkshakes. Crafted with fresh ingredients and passion, Lotus Hut is your cozy haven for good food, great conversations, and relaxing with family and friends.";
 
 export default function Footer() {
   const [expanded, setExpanded] = useState(false);
@@ -14,8 +14,23 @@ export default function Footer() {
   return (
     <footer className="bg-white">
       <div className="mx-auto max-w-7xl px-6 py-10">
-        {/* Expandable description card */}
+        {/* Brand & Description Card */}
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <img
+              src="/logo.jpeg"
+              alt="Lotus Hut"
+              className="h-12 w-12 rounded-full object-cover shadow-sm ring-2 ring-red-100"
+            />
+            <div>
+              <h2 className="text-lg font-black tracking-tight text-gray-900">
+                Lotus Hut Cafe &amp; Bistro
+              </h2>
+              <p className="text-xs font-semibold text-red-600">
+                Fresh Sandwiches · Pizzas · Coffees · Gourmet Shakes
+              </p>
+            </div>
+          </div>
           <p
             className={`text-sm leading-relaxed text-gray-800 ${
               expanded ? "" : "line-clamp-3"
@@ -25,7 +40,7 @@ export default function Footer() {
           </p>
           <button
             onClick={() => setExpanded((v) => !v)}
-            className="mt-2 text-sm font-medium text-blue-600 hover:underline"
+            className="mt-2 text-sm font-medium text-blue-600 hover:underline cursor-pointer"
           >
             {expanded ? "Collapse Text" : "Expand Text"}
           </button>
@@ -43,7 +58,7 @@ export default function Footer() {
                 <FiClock className="h-5 w-5 text-black" />
               </span>
               <p className="text-sm text-gray-800">
-                Today we are open from 11:00 AM
+                Today we are open from 09:00 AM
                 <br />and close at 11:00 PM
               </p>
             </div>
@@ -70,7 +85,7 @@ export default function Footer() {
                   <FiMapPin className="h-5 w-5 text-black" />
                 </span>
                 <p className="text-sm text-gray-800">
-                  MG Road, Shop No. 12, Near City Center Mall, Bhopal, Madhya Pradesh 462001
+                  MG Road, Bhopal, Madhya Pradesh 462001
                 </p>
               </div>
             </div>
@@ -109,7 +124,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-6 pb-2">
         <div className="flex flex-col items-center justify-between gap-3 rounded-2xl bg-amber-400 px-6 py-4 sm:flex-row">
           <p className="text-sm font-medium text-black">
-            © {new Date().getFullYear()} Demo QR menu
+            © {new Date().getFullYear()} Lotus Hut Cafe &amp; Bistro
           </p>
           <Link
             href="/privacy-policy"

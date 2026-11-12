@@ -68,6 +68,8 @@ else
 fi
 
 # 3. Handle .env file (root directory)
+DOMAIN="lotushut.bluewebspark.com"
+
 if [ ! -f .env ]; then
     if [ -f backend/.env ]; then
         echo -e "${YELLOW}Found existing backend/.env! Copying it to root .env for deployment...${NC}"
@@ -92,8 +94,9 @@ JWT_REFRESH_SECRET=${JWT_REFRESH}
 AES_SECRET_KEY=${AES_KEY}
 COOKIE_SECRET=${COOKIE_SEC}
 
-FRONTEND_URL=http://localhost
-WEBSITE_URL=http://localhost
+FRONTEND_URL=https://${DOMAIN}/admin
+WEBSITE_URL=https://${DOMAIN}
+CORS_ORIGIN=*
 
 ADMIN_NAME=Admin User
 ADMIN_EMAIL=admin@restaurant.com
@@ -101,8 +104,30 @@ ADMIN_PASSWORD=Admin@123456
 EOF
         echo -e "${GREEN}✔ Created .env with generated secrets.${NC}"
     fi
-else
-    echo -e "${GREEN}✔ Root .env file already exists.${NC}"
+fi
+
+# Ensure domain URLs are configured in .env
+if [ -f .env ]; then
+    echo -e "${YELLOW}Configuring domain ${DOMAIN} in .env...${NC}"
+    if grep -q "^FRONTEND_URL=" .env; then
+        sed -i.bak "s|^FRONTEND_URL=.*|FRONTEND_URL=https://${DOMAIN}/admin|" .env
+    else
+        echo "FRONTEND_URL=https://${DOMAIN}/admin" >> .env
+    fi
+
+    if grep -q "^WEBSITE_URL=" .env; then
+        sed -i.bak "s|^WEBSITE_URL=.*|WEBSITE_URL=https://${DOMAIN}|" .env
+    else
+        echo "WEBSITE_URL=https://${DOMAIN}" >> .env
+    fi
+
+    if grep -q "^CORS_ORIGIN=" .env; then
+        sed -i.bak "s|^CORS_ORIGIN=.*|CORS_ORIGIN=*|" .env
+    else
+        echo "CORS_ORIGIN=*" >> .env
+    fi
+    rm -f .env.bak
+    echo -e "${GREEN}✔ .env updated with domain ${DOMAIN}.${NC}"
 fi
 
 # 4. Stop any conflicting local processes or old containers if running
@@ -136,9 +161,10 @@ echo -e "${BLUE}======================================================${NC}"
 PUBLIC_IP=$(curl -s http://checkip.amazonaws.com || curl -s ifconfig.me || echo "your-server-ip")
 
 echo -e "You can now access your application at:"
-echo -e "  🌐 Customer Website:   ${GREEN}http://${PUBLIC_IP}/${NC}"
-echo -e "  ⚙️  Admin Dashboard:    ${GREEN}http://${PUBLIC_IP}/admin/${NC}"
-echo -e "  📡 Backend API Health:  ${GREEN}http://${PUBLIC_IP}/api/health${NC}"
+echo -e "  🌐 Customer Website:   ${GREEN}https://${DOMAIN}/${NC} (or http://${DOMAIN}/)"
+echo -e "  ⚙️  Admin Dashboard:    ${GREEN}https://${DOMAIN}/admin/${NC}"
+echo -e "  📡 Backend API Health:  ${GREEN}https://${DOMAIN}/api/health${NC}"
+echo -e "\nFallback IP Address:     http://${PUBLIC_IP}/"
 echo -e "\nDefault Admin Credentials:"
 echo -e "  Email:    admin@restaurant.com"
 echo -e "  Password: Admin@123456"

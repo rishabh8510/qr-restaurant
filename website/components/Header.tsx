@@ -66,15 +66,19 @@ export default function Header() {
         {/* Brand identity */}
         <div className="flex items-center gap-3 sm:gap-6">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 text-white shadow-md shadow-amber-500/20 transition-transform group-hover:scale-105">
-              <FiCoffee className="h-5 w-5" />
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full overflow-hidden shadow-md ring-2 ring-red-100 transition-transform group-hover:scale-105">
+              <img
+                src="/logo.jpeg"
+                alt="Lotus Hut"
+                className="h-full w-full object-cover"
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-base font-black tracking-tight text-stone-900 leading-none">
-                CAFE &amp; BISTRO
+                LOTUS HUT
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-amber-600 leading-none mt-1">
-                Digital Menu
+              <span className="text-[10px] font-bold uppercase tracking-widest text-red-600 leading-none mt-1">
+                Cafe &amp; Bistro
               </span>
             </div>
           </Link>

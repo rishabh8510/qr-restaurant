@@ -13,6 +13,8 @@ COPY config ./config
 COPY migrations ./migrations
 COPY seeders ./seeders
 COPY seed-dummy-data.js ./
+COPY menu-seed-data.js ./
+COPY sync-menu.js ./
 COPY start.sh ./
 RUN chmod +x ./start.sh
 

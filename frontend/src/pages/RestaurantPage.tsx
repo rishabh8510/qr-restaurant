@@ -24,7 +24,7 @@ export function RestaurantPage() {
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin';
   const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>('/logo.jpeg');
   const [success, setSuccess] = useState(false);
 
   const { data, isLoading } = useRestaurant();
@@ -49,7 +49,11 @@ export function RestaurantPage() {
         phone: r.phone || '',
         email: r.email || '',
       });
-      if (r.logo) setPreviewUrl(r.logo);
+      if (r.logo) {
+        setPreviewUrl(r.logo);
+      } else {
+        setPreviewUrl('/logo.jpeg');
+      }
     }
   }, [data, reset]);
 
