@@ -433,105 +433,27 @@ export class OrderService {
     orderType?: 'delivery' | 'dining' | 'pickup';
   }) {
     const subtotal = input.items.reduce((sum, i) => sum + Number(i.price) * i.quantity, 0);
-    const restaurant = await Restaurant.findOne();
-    const pricing = readPricingSettings(restaurant?.settings || null);
-    const isFirstOrder = await this.isFirstOrderForUser(input.userId);
+    const roundedSubtotal = Math.round(subtotal * 100) / 100;
 
-    // ---- First-order discount ----
-    let discount = 0;
-    let discountLabel: string | null = null;
-    if (
-      isFirstOrder &&
-      pricing.firstOrderDiscountEnabled &&
-      pricing.firstOrderDiscountPercent > 0
-    ) {
-      discount =
-        Math.round(((subtotal * pricing.firstOrderDiscountPercent) / 100) * 100) / 100;
-      discountLabel = `First order ${pricing.firstOrderDiscountPercent}% off`;
-    }
-
-    // ---- Loyalty: 5th order, 10th order, etc. ----
-    let loyaltyDiscount = 0;
-    let loyaltyLabel: string | null = null;
-
-    if (input.userId) {
-      const pastCount = await Order.count({
-        where: {
-          userId: input.userId,
-          status: { [Op.ne]: 'cancelled' },
-        },
-      });
-      const thisOrderNumber = pastCount + 1;
-      const now = new Date();
-
-      const loyaltyOffers = await Offer.findAll({
-        where: {
-          isActive: true,
-          offerKind: 'loyalty',
-          minOrderCount: thisOrderNumber,
-          startDate: { [Op.lte]: now },
-          endDate: { [Op.gte]: now },
-        },
-      });
-
-      for (const lo of loyaltyOffers) {
-        let d = 0;
-        if (lo.discountType === 'percentage') {
-          d = (subtotal * Number(lo.discountValue)) / 100;
-        } else {
-          d = Number(lo.discountValue);
-        }
-        d = Math.round(d * 100) / 100;
-        if (d > loyaltyDiscount) {
-          loyaltyDiscount = d;
-          loyaltyLabel =
-            lo.title ||
-            `${lo.discountValue}${lo.discountType === 'percentage' ? '%' : '₹'} on order #${thisOrderNumber}`;
-        }
-      }
-    }
-
-    // Max of first-order vs loyalty (dono ek saath stack mat karo)
-    if (loyaltyDiscount > discount) {
-      discount = loyaltyDiscount;
-      discountLabel = loyaltyLabel;
-    }
-
-    const afterDiscount = Math.max(0, subtotal - discount);
-
-    // GST total % → split equally CGST + SGST (real local billing)
-    const taxPercent = Number(pricing.taxPercent || 0);
-    const cgstPercent = Math.round((taxPercent / 2) * 1000) / 1000;
-    const sgstPercent = Math.round((taxPercent / 2) * 1000) / 1000;
-    const cgst = Math.round(((afterDiscount * cgstPercent) / 100) * 100) / 100;
-    const sgst = Math.round(((afterDiscount * sgstPercent) / 100) * 100) / 100;
-    const tax = Math.round((cgst + sgst) * 100) / 100;
-
-    const deliveryCharge =
-      input.orderType === 'delivery' ? Number(pricing.deliveryCharge || 0) : 0;
-    const packingCharge = Number(pricing.packingCharge || 0);
-
-    const total =
-      Math.round((afterDiscount + tax + deliveryCharge + packingCharge) * 100) / 100;
-
+    // Direct original price only — no tax, no discount, no extra charges
     return {
-      subtotal: Math.round(subtotal * 100) / 100,
-      discount,
-      tax,
-      taxPercent,
-      cgst,
-      sgst,
-      cgstPercent,
-      sgstPercent,
-      deliveryCharge,
-      packingCharge,
-      total,
-      isFirstOrder,
-      discountLabel,
-      firstOrderDiscountPercent: pricing.firstOrderDiscountPercent,
-      firstOrderDiscountEnabled: pricing.firstOrderDiscountEnabled,
-      loyaltyDiscount,
-      loyaltyLabel,
+      subtotal: roundedSubtotal,
+      discount: 0,
+      tax: 0,
+      taxPercent: 0,
+      cgst: 0,
+      sgst: 0,
+      cgstPercent: 0,
+      sgstPercent: 0,
+      deliveryCharge: 0,
+      packingCharge: 0,
+      total: roundedSubtotal,
+      isFirstOrder: false,
+      discountLabel: null,
+      firstOrderDiscountPercent: 0,
+      firstOrderDiscountEnabled: false,
+      loyaltyDiscount: 0,
+      loyaltyLabel: null,
     };
   }
 

@@ -33,13 +33,13 @@ export function LoginPage() {
   });
 
   if (isLoading) return <PageLoader />;
-  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
+  if (isAuthenticated) return <Navigate to="/orders" replace />;
 
   const onSubmit = async (data: FormData) => {
     setError('');
     try {
       await login(data.email, data.password);
-      navigate('/dashboard', { replace: true });
+      navigate('/orders', { replace: true });
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||

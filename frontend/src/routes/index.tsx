@@ -45,8 +45,8 @@ export function AppRouter() {
             <Route path="/dish-of-the-day" element={<DishOfTheDayPage />} />
             <Route path="/orders" element={<OrdersPage />} />
           </Route>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Navigate to="/orders" replace />} />
+          <Route path="*" element={<Navigate to="/orders" replace />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

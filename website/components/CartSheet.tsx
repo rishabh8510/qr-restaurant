@@ -135,19 +135,9 @@ export default function CartSheet() {
           {/* Footer Checkout Summary */}
           <div className="sticky bottom-0 -mx-6 -mb-4 border-t border-gray-100 bg-white px-6 py-4 shadow-lg">
             <div className="space-y-1.5 text-sm">
-              <div className="flex justify-between text-gray-500">
-                <span>Subtotal</span>
-                <span className="font-semibold text-gray-900">
-                  ₹{totalPrice.toFixed(2)}
-                </span>
-              </div>
-              <div className="flex justify-between text-xs text-gray-400">
-                <span>Taxes & charges</span>
-                <span>Calculated at checkout</span>
-              </div>
-              <div className="flex justify-between border-t border-gray-100 pt-2 text-base font-bold text-gray-900">
-                <span>Total</span>
-                <span>₹{totalPrice.toFixed(2)}</span>
+              <div className="flex justify-between text-base font-bold text-gray-900">
+                <span>Total Amount</span>
+                <span className="text-amber-600">₹{totalPrice.toFixed(2)}</span>
               </div>
             </div>
 

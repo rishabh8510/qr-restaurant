@@ -42,104 +42,32 @@ interface Order {
   discount?: number | string;
 }
 
-const FLOW = ["pending", "confirmed", "preparing", "ready", "completed"] as const;
-
 const STATUS_MAP: Record<
   string,
   { label: string; badgeVariant: 'default' | 'amber' | 'emerald' | 'destructive' | 'secondary' | 'outline'; hint: string }
 > = {
-  pending: {
-    label: "Order Placed",
-    badgeVariant: "amber",
-    hint: "Kitchen is reviewing your order...",
-  },
-  confirmed: {
-    label: "Accepted",
-    badgeVariant: "default",
-    hint: "Chef has accepted your order.",
-  },
-  preparing: {
-    label: "Preparing",
-    badgeVariant: "amber",
-    hint: "Your food is being freshly prepared in the kitchen.",
-  },
-  ready: {
-    label: "Ready for Pickup / Table",
-    badgeVariant: "emerald",
-    hint: "Order is ready! Staff is serving your table.",
-  },
   completed: {
     label: "Completed",
     badgeVariant: "emerald",
-    hint: "Order served and completed. Enjoy your meal!",
+    hint: "✓ Order completed. Thank you for dining with Lotus Hut!",
   },
   cancelled: {
     label: "Cancelled",
     badgeVariant: "destructive",
     hint: "This order was cancelled.",
   },
+  pending: {
+    label: "Order Placed",
+    badgeVariant: "amber",
+    hint: "Your order has been placed and is being prepared.",
+  },
 };
 
-function OrderStepper({ status }: { status: string }) {
-  const st = status.toLowerCase();
-  if (st === "cancelled") {
-    return (
-      <div className="mt-3 rounded-xl bg-red-50 p-2.5 text-center text-xs font-semibold text-red-600">
-        Order Cancelled
-      </div>
-    );
-  }
-
-  const currentIdx = FLOW.indexOf(st as (typeof FLOW)[number]);
-  const activeIdx = currentIdx === -1 ? 0 : currentIdx;
-
-  return (
-    <div className="mt-4 flex items-center justify-between gap-1">
-      {FLOW.map((step, i) => {
-        const done = i <= activeIdx;
-        const current = i === activeIdx;
-
-        return (
-          <div key={step} className="flex flex-1 flex-col items-center gap-1.5">
-            <div className="flex w-full items-center">
-              {i > 0 && (
-                <div
-                  className={`h-1 flex-1 rounded-full transition-colors ${
-                    done ? "bg-amber-400" : "bg-gray-100"
-                  }`}
-                />
-              )}
-              <div
-                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-black transition-all ${
-                  current
-                    ? "bg-amber-400 text-black ring-4 ring-amber-100 scale-110"
-                    : done
-                      ? "bg-gray-900 text-white"
-                      : "bg-gray-100 text-gray-400"
-                }`}
-              >
-                {done && !current ? "✓" : i + 1}
-              </div>
-              {i < FLOW.length - 1 && (
-                <div
-                  className={`h-1 flex-1 rounded-full transition-colors ${
-                    i < activeIdx ? "bg-amber-400" : "bg-gray-100"
-                  }`}
-                />
-              )}
-            </div>
-            <span
-              className={`text-[10px] font-bold capitalize tracking-tight ${
-                current ? "text-amber-800" : done ? "text-gray-700" : "text-gray-400"
-              }`}
-            >
-              {STATUS_MAP[step]?.label || step}
-            </span>
-          </div>
-        );
-      })}
-    </div>
-  );
+function getStatusInfo(status: string) {
+  const st = String(status || "pending").toLowerCase();
+  if (st === "completed") return STATUS_MAP.completed;
+  if (st === "cancelled") return STATUS_MAP.cancelled;
+  return STATUS_MAP.pending;
 }
 
 export default function OrdersPage() {
@@ -279,8 +207,7 @@ export default function OrdersPage() {
         ) : (
           orders.map((o) => {
             const st = String(o.status || "pending").toLowerCase();
-            const meta = STATUS_MAP[st] || STATUS_MAP.pending;
-            const pm = o.pricingMeta || {};
+            const meta = getStatusInfo(st);
 
             return (
               <Card key={o.id} className="overflow-hidden border-gray-100 bg-white shadow-xs">
@@ -310,9 +237,16 @@ export default function OrdersPage() {
                 </div>
 
                 <CardContent className="p-4 sm:p-6">
-                  {/* Status hint & progress stepper */}
-                  <p className="text-xs font-medium text-gray-500">{meta.hint}</p>
-                  <OrderStepper status={st} />
+                  {/* Status hint box */}
+                  <div className={`rounded-xl p-3 text-xs font-bold flex items-center gap-2 ${
+                    st === "completed"
+                      ? "bg-emerald-50 text-emerald-800 border border-emerald-100"
+                      : st === "cancelled"
+                      ? "bg-red-50 text-red-700 border border-red-100"
+                      : "bg-amber-50 text-amber-900 border border-amber-100"
+                  }`}>
+                    <span>{meta.hint}</span>
+                  </div>
 
                   {/* Items list */}
                   <div className="mt-6 border-t border-gray-100 pt-4">
@@ -333,37 +267,10 @@ export default function OrdersPage() {
                     </ul>
                   </div>
 
-                  {/* Pricing Breakdown */}
-                  <div className="mt-4 border-t border-gray-100 pt-3 space-y-1.5 text-xs text-gray-500">
-                    {Number(o.discount) > 0 && (
-                      <div className="flex justify-between text-emerald-700 font-semibold">
-                        <span>{pm.discountLabel || "Discount"}</span>
-                        <span>-₹{Number(o.discount).toFixed(2)}</span>
-                      </div>
-                    )}
-                    {Number(pm.cgst) > 0 && (
-                      <div className="flex justify-between">
-                        <span>CGST</span>
-                        <span>₹{Number(pm.cgst).toFixed(2)}</span>
-                      </div>
-                    )}
-                    {Number(pm.sgst) > 0 && (
-                      <div className="flex justify-between">
-                        <span>SGST</span>
-                        <span>₹{Number(pm.sgst).toFixed(2)}</span>
-                      </div>
-                    )}
-                    {Number(pm.deliveryCharge) > 0 && (
-                      <div className="flex justify-between">
-                        <span>Delivery Fee</span>
-                        <span>₹{Number(pm.deliveryCharge).toFixed(2)}</span>
-                      </div>
-                    )}
-
-                    <div className="flex justify-between border-t border-gray-100 pt-2 text-base font-black text-gray-900">
-                      <span>Total Paid</span>
-                      <span>₹{Number(o.total || 0).toFixed(2)}</span>
-                    </div>
+                  {/* Total Amount Only */}
+                  <div className="mt-4 border-t border-gray-100 pt-3 flex justify-between text-base font-black text-gray-900">
+                    <span>Total Amount</span>
+                    <span className="text-amber-600 tabular-nums">₹{Number(o.total || 0).toFixed(2)}</span>
                   </div>
                 </CardContent>
               </Card>

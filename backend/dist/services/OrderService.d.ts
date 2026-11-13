@@ -32,11 +32,11 @@ export declare class OrderService {
         packingCharge: number;
         total: number;
         isFirstOrder: boolean;
-        discountLabel: string | null;
+        discountLabel: null;
         firstOrderDiscountPercent: number;
         firstOrderDiscountEnabled: boolean;
         loyaltyDiscount: number;
-        loyaltyLabel: string | null;
+        loyaltyLabel: null;
     }>;
     create(input: CreateOrderInput): Promise<Order>;
     acceptOrder(orderId: string, staffId: string): Promise<Order | null>;

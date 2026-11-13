@@ -63,37 +63,9 @@ function BillSummary({
   return (
     <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4 space-y-2 text-sm">
       <div className="flex justify-between text-gray-600">
-        <span>Item Total (incl. discounts)</span>
+        <span>Item Total</span>
         <span className="font-semibold text-gray-900">₹{quote.subtotal}</span>
       </div>
-
-      {quote.discount > 0 && (
-        <div className="flex justify-between text-green-700">
-          <span>{quote.discountLabel || "Special Discount"}</span>
-          <span className="font-semibold">-₹{quote.discount}</span>
-        </div>
-      )}
-
-      {quote.tax > 0 && (
-        <div className="flex justify-between text-gray-600">
-          <span>Taxes ({quote.taxPercent}%)</span>
-          <span className="font-semibold text-gray-900">₹{quote.tax}</span>
-        </div>
-      )}
-
-      {quote.deliveryCharge > 0 && (
-        <div className="flex justify-between text-gray-600">
-          <span>Delivery Charge</span>
-          <span className="font-semibold text-gray-900">₹{quote.deliveryCharge}</span>
-        </div>
-      )}
-
-      {quote.packingCharge > 0 && (
-        <div className="flex justify-between text-gray-600">
-          <span>Packing Charge</span>
-          <span className="font-semibold text-gray-900">₹{quote.packingCharge}</span>
-        </div>
-      )}
 
       <div className="border-t border-gray-200/80 pt-2 flex justify-between text-base font-black text-gray-900">
         <span>Total Payable</span>
