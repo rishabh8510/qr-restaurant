@@ -100,7 +100,6 @@ exports.otpService = exports.OtpService = void 0;
 const sequelize_1 = require("sequelize");
 const models_1 = require("../models");
 const tokens_1 = require("../utils/tokens");
-const env_1 = require("../config/env");
 const errors_1 = require("../utils/errors");
 const OTP_EXPIRY_MINUTES = 5;
 function generateOtpCode() {
@@ -129,7 +128,8 @@ class OtpService {
         console.log(`[OTP] Phone ${normalized} code: ${code}`);
         return {
             message: 'OTP sent successfully',
-            ...(env_1.env.NODE_ENV !== 'production' ? { debugCode: code } : {}),
+            debugCode: code,
+            otp: code,
         };
     }
     async verifyOtp(phone, code, name) {

@@ -2,6 +2,7 @@ export declare class OtpService {
     sendOtp(phone: string): Promise<{
         message: string;
         debugCode?: string;
+        otp?: string;
     }>;
     verifyOtp(phone: string, code: string, name?: string): Promise<{
         accessToken: string;

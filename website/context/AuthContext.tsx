@@ -32,7 +32,7 @@ type AuthCtx = {
   openLoginModal: (onSuccess?: () => void) => void;
   closeLoginModal: () => void;
   requireAuth: (action: () => void) => void;
-  sendOtp: (phone: string) => Promise<{ debugCode?: string }>;
+  sendOtp: (phone: string) => Promise<{ message?: string; debugCode?: string; otp?: string }>;
   verifyOtp: (phone: string, code: string, name?: string) => Promise<void>;
   logout: () => void;
   updateProfile: (data: { name?: string }) => void;

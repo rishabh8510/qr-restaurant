@@ -136,7 +136,7 @@ function normalizePhone(phone: string): string {
 }
 
 export class OtpService {
-  async sendOtp(phone: string): Promise<{ message: string; debugCode?: string }> {
+  async sendOtp(phone: string): Promise<{ message: string; debugCode?: string; otp?: string }> {
     const normalized = normalizePhone(phone);
     if (normalized.length < 10) {
       throw new BadRequestError('Invalid phone number');
@@ -161,7 +161,8 @@ export class OtpService {
 
     return {
       message: 'OTP sent successfully',
-      ...(env.NODE_ENV !== 'production' ? { debugCode: code } : {}),
+      debugCode: code,
+      otp: code,
     };
   }
 

@@ -36,7 +36,11 @@ export default function LoginModal() {
     setLoading(true);
     try {
       const r = await sendOtp(phone);
-      if (r.debugCode) setDebugOtp(r.debugCode);
+      const receivedOtp = r.debugCode || r.otp || "";
+      if (receivedOtp) {
+        setDebugOtp(receivedOtp);
+        setCode(receivedOtp);
+      }
       setStep("otp");
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Failed to send OTP");
@@ -95,6 +99,8 @@ export default function LoginModal() {
           <p className="mt-1 text-xs text-gray-500">
             {step === "phone"
               ? "Fast, frictionless ordering with your mobile number"
+              : debugOtp
+              ? `Use the OTP shown below for +91 ${phone}`
               : `Enter the 6-digit code sent to ${phone}`}
           </p>
         </div>
@@ -141,11 +147,29 @@ export default function LoginModal() {
         ) : (
           <div className="mt-6 space-y-4">
             {debugOtp && (
-              <div className="flex items-center gap-2 rounded-xl bg-emerald-50 px-3.5 py-2.5 text-xs text-emerald-800 font-medium">
-                <FiCheckCircle className="shrink-0 text-emerald-600" size={15} />
-                <span>
-                  Demo OTP: <strong className="tracking-widest font-black">{debugOtp}</strong>
-                </span>
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50/90 p-3.5 text-emerald-900 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-800">
+                    <FiCheckCircle className="shrink-0 text-emerald-600" size={15} />
+                    <span>SMS service not active yet</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setCode(debugOtp)}
+                    className="text-[11px] font-bold text-emerald-700 hover:text-emerald-950 underline cursor-pointer"
+                  >
+                    Auto-fill
+                  </button>
+                </div>
+                <div className="mt-2 flex items-center justify-between rounded-lg bg-white/90 px-3 py-2 border border-emerald-100">
+                  <span className="text-xs text-gray-600 font-medium">Your OTP:</span>
+                  <span className="text-lg font-black tracking-[0.25em] text-emerald-800 font-mono">
+                    {debugOtp}
+                  </span>
+                </div>
+                <p className="mt-1.5 text-[11px] text-emerald-700/80">
+                  We have auto-filled this code for you. Click below to continue.
+                </p>
               </div>
             )}
 
@@ -195,19 +219,29 @@ export default function LoginModal() {
               <span>Verify & Continue</span>
             </Button>
 
-            <button
-              type="button"
-              onClick={() => {
-                setStep("phone");
-                setCode("");
-                setDebugOtp("");
-                setError("");
-              }}
-              className="flex w-full items-center justify-center gap-1.5 text-xs font-semibold text-gray-500 transition hover:text-gray-900"
-            >
-              <FiArrowLeft size={13} />
-              Change mobile number
-            </button>
+            <div className="flex items-center justify-between text-xs pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setStep("phone");
+                  setCode("");
+                  setDebugOtp("");
+                  setError("");
+                }}
+                className="flex items-center gap-1 font-semibold text-gray-500 hover:text-gray-900 transition cursor-pointer"
+              >
+                <FiArrowLeft size={13} />
+                Change number
+              </button>
+              <button
+                type="button"
+                disabled={loading}
+                onClick={handleSend}
+                className="font-bold text-amber-600 hover:text-amber-700 disabled:opacity-50 transition cursor-pointer"
+              >
+                Resend OTP
+              </button>
+            </div>
           </div>
         )}
 
