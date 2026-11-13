@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lotus Hut Cafe | Our Menu</title>
+
+<style>
+:root{--red:#ed101c;--ink:#211512;--muted:#777;--line:#eee;--gold:#f2c36b}
+*{box-sizing:border-box}
+body{margin:0;background:#f7f7f7;color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+.site-header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #eee;padding:9px 16px;display:flex;align-items:center;gap:10px}
+.site-logo{width:48px;height:48px;object-fit:contain;border-radius:50%;background:#ed101c}
+.site-brand{font-size:18px;font-weight:900;color:var(--red)}
+.site-brand small{display:block;color:#765044;font-size:10px;letter-spacing:1.5px;margin-top:3px}
+.menu-section{max-width:850px;margin:auto;padding:12px 12px 100px}
+.quick-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 2px 12px}
+.quick-heading h1{font-size:23px;margin:0}
+.quick-heading p{font-size:12px;color:var(--muted);margin:4px 0 0}
+.search-box{display:block;margin:10px 0}
+.search-box input{width:100%;padding:13px 14px;border:1px solid #e5e5e5;border-radius:10px;font-size:14px;outline:none;background:#fff}
+.search-box input:focus{border-color:var(--red)}
+.category-bar{display:flex;gap:7px;overflow-x:auto;position:sticky;top:66px;z-index:10;background:#f7f7f7;padding:8px 0 11px;scrollbar-width:none}
+.category-bar::-webkit-scrollbar{display:none}
+.category-btn{white-space:nowrap;border:1px solid #e5e5e5;background:#fff;border-radius:20px;padding:9px 13px;font-size:12px;font-weight:700;color:#333}
+.category-btn.active{background:var(--red);border-color:var(--red);color:#fff}
+.menu-group{margin:7px 0 16px}
+.group-title{font-size:16px;font-weight:800;margin:13px 2px 7px}
+.menu-item{background:#fff;border:1px solid #eee;border-radius:11px;padding:12px 13px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;min-height:70px}
+.item-info{min-width:0}
+.item-name{font-size:14px;font-weight:700;line-height:1.35;overflow-wrap:anywhere}
+.item-price{font-size:15px;color:#211512;font-weight:800;margin-top:6px;letter-spacing:.1px}
+.item-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;min-width:72px;justify-content:flex-end}
+.add-btn{background:#fff;border:1.5px solid var(--red);color:var(--red);border-radius:7px;padding:8px 15px;font-size:12px;font-weight:900;min-width:62px;box-shadow:0 1px 2px #00000008}
+.qty-control{display:flex;align-items:center;gap:10px;background:#fff4f4;border:1px solid #ffd4d4;border-radius:7px;padding:5px 8px;color:var(--red);font-weight:800;min-height:34px}
+.qty-control button{border:0;background:transparent;color:var(--red);font-size:18px;line-height:18px;padding:0 3px}
+.empty-state{display:none;text-align:center;background:#fff;border-radius:10px;padding:28px;color:var(--muted)}
+.cart-bar{position:fixed;bottom:0;left:0;right:0;z-index:30;background:#fff;border-top:1px solid #eee;padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:none}
+.cart-inner{max-width:850px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.cart-count{font-size:12px;color:#666}
+.cart-total{font-size:16px;font-weight:900;margin-top:3px}
+.view-cart{background:var(--red);color:#fff;border:0;border-radius:9px;padding:12px 19px;font-weight:800;font-size:13px}
+.cart-panel{display:none;position:fixed;inset:0;background:#0008;z-index:50;align-items:flex-end;justify-content:center}
+.cart-panel.open{display:flex}
+.cart-sheet{background:#fff;width:100%;max-width:600px;max-height:82vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px}
+.cart-sheet-head{display:flex;justify-content:space-between;align-items:center}
+.cart-sheet h2{font-size:19px;margin:0}
+.close-cart{border:0;background:#f2f2f2;border-radius:50%;width:32px;height:32px;font-size:18px}
+.cart-line{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid #eee;font-size:13px}
+.cart-line button{border:0;background:none;color:var(--red);font-weight:700}
+.cart-footer{padding-top:15px}
+.cart-footer .grand{font-size:17px;font-weight:900;display:flex;justify-content:space-between;margin-bottom:12px}
+.order-note{font-size:12px;color:#777;line-height:1.5}
+@media(min-width:700px){.menu-section{padding-top:20px}.category-bar{top:66px}.menu-item{padding:14px 16px}.item-name{font-size:15px}.item-price{font-size:16px}}
+@media(max-width:480px){.site-header{padding:8px 12px}.site-logo{width:56px;height:56px}.site-brand{font-size:19px}
+ .menu-section{padding-left:10px;padding-right:10px}
+ .menu-item{padding:11px 10px;gap:8px;min-height:68px}
+ .item-info{flex:1}
+ .item-name{font-size:13px;line-height:1.35}
+ .item-price{font-size:15px;margin-top:5px}
+ .item-actions{min-width:66px}
+ .add-btn{min-width:60px;padding:8px 12px}
+ .qty-control{gap:8px;padding:5px 6px}
+ .group-title{font-size:15px}
+}
+
+.checkout-panel{display:none;position:fixed;inset:0;background:#0008;z-index:60;align-items:flex-end;justify-content:center}
+.checkout-panel.open{display:flex}
+.checkout-sheet{background:#fff;width:100%;max-width:600px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px}
+.checkout-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.checkout-head h2{margin:0;font-size:19px}
+.checkout-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.checkout-fields label{font-size:12px;font-weight:700;color:#555;display:block}
+.checkout-fields input,.checkout-fields select,.checkout-fields textarea{width:100%;margin-top:6px;padding:12px;border:1px solid #ddd;border-radius:9px;font:14px Arial;background:#fff}
+.checkout-fields .full{grid-column:1/-1}
+.checkout-fields textarea{min-height:68px;resize:vertical}
+.checkout-total{display:flex;justify-content:space-between;font-size:17px;font-weight:900;padding:16px 0}
+.pay-btn,.whatsapp-btn{width:100%;border:0;border-radius:10px;padding:14px;font-weight:900;font-size:14px}
+.pay-btn{background:var(--red);color:#fff}
+.whatsapp-btn{background:#168a45;color:#fff;margin-top:9px}
+.checkout-help{font-size:11px;color:#777;line-height:1.5;margin:10px 0}
+.checkout-error{display:none;color:#b00020;font-size:12px;margin:9px 0}
+.qty-entry{display:flex;align-items:center;gap:5px}
+.qty-entry input{width:43px;height:33px;border:1px solid #ddd;border-radius:6px;text-align:center;font-size:14px;font-weight:800}
+.qty-entry .add-btn{min-width:52px;padding:8px 10px}
+@media(max-width:480px){.checkout-sheet{padding:16px 13px}.checkout-fields{grid-template-columns:1fr}.checkout-fields .full{grid-column:auto}.qty-entry{gap:4px}.qty-entry input{width:38px}}
+
+</style>
+
+</head>
+<body>
+
+<section class="menu-section" id="our-menu">
+  <div class="quick-heading">
+    <div>
+      <h1>Order Your Favourites</h1>
+      <p>Quick order for table service, drive-in or takeaway.</p>
+    </div>
+  </div>
+  <label class="search-box">
+    <input id="menuSearch" type="search" placeholder="Search food or drinks..." aria-label="Search menu">
+  </label>
+  <nav class="category-bar" id="categoryBar" aria-label="Menu categories"></nav>
+  <div id="menuList"></div>
+  <div class="empty-state" id="emptyState">No items found. Try another search.</div>
+</section>
+
+<div class="cart-bar" id="cartBar">
+  <div class="cart-inner">
+    <div><div class="cart-count" id="cartCount">0 items</div><div class="cart-total" id="cartTotal">₹0</div></div>
+    <button class="view-cart" id="viewCart">VIEW CART →</button>
+  </div>
+</div>
+<div class="cart-panel" id="cartPanel" role="dialog" aria-modal="true" aria-label="Your cart">
+  <div class="cart-sheet">
+    <div class="cart-sheet-head"><h2>Your Order</h2><button class="close-cart" id="closeCart" aria-label="Close">×</button></div>
+    <div id="cartLines"></div>
+    <div class="cart-footer">
+      <div class="grand"><span>Total</span><span id="panelTotal">₹0</span></div>
+      <p class="order-note">Order summary preview. Connect your ordering/checkout system or WhatsApp number to accept orders online.</p>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="checkout-panel" id="checkoutPanel" role="dialog" aria-modal="true" aria-label="Checkout">
+ <div class="checkout-sheet">
+  <div class="checkout-head"><h2>Customer Details</h2><button class="close-cart" id="closeCheckout" aria-label="Close">×</button></div>
+  <form id="checkoutForm">
+   <div class="checkout-fields">
+    <label>Full name<input id="customerName" required autocomplete="name" placeholder="Enter your name"></label>
+    <label>Mobile number<input id="customerPhone" required type="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile number"></label>
+    <label class="full">How would you like your order?
+     <select id="orderType">
+      <option value="Drive-in">🚗 Drive-in – I'll enjoy it in my car</option>
+      <option value="Dine-in">🪑 Dine-in – Serve at my table</option>
+      <option value="Takeaway">🥡 Takeaway – I'll collect it</option>
+     </select>
+    </label>
+    <label class="full" id="tableWrap" style="display:none">Table number<input id="tableNumber" placeholder="Enter table number" inputmode="numeric"></label>
+    <label class="full" id="carWrap">Car number / vehicle details<input id="carNumber" placeholder="e.g. MP09 AB 1234"></label>
+    <label class="full" id="pickupWrap" style="display:none">Pickup name (optional)<input id="pickupName" placeholder="Name for pickup"></label>
+    <label class="full">Special instructions (optional)<textarea id="orderNotes" placeholder="Less spicy, no onion, etc."></textarea></label>
+   </div>
+   <div class="checkout-total"><span>Payable total</span><span id="checkoutTotal">₹0</span></div>
+   <button class="pay-btn" type="submit">PAY WITH PHONEPE / UPI</button>
+   <div class="checkout-error" id="checkoutError"></div>
+   <p class="checkout-help">Choose your service option and place the order. PhonePe / UPI payment will open if your cafe UPI ID is configured. Payment must be verified by the cafe.</p>
+   <button class="whatsapp-btn" type="button" id="sendOrder">PLACE ORDER WITH CAFE</button>
+  </form>
+ </div>
+</div>
+
+<script>
+const menu = [
+["Sandwich","Butter Toast",50],["Sandwich","Vegetable",70],["Sandwich","Aloo Masala",70],["Sandwich","Bombay Kachha",70],["Sandwich","Jain Sandwich",70],["Sandwich","Jam Sandwich",70],["Sandwich","Chatni Masala",70],["Sandwich","Bombay Kachha Cheese",120],["Sandwich","Cheese Chatni",120],["Sandwich","Cheese Toast",120],["Sandwich","Vegetable Cheese",120],["Sandwich","Cheese & Chillie",120],["Sandwich","Cheesy Veg",120],["Sandwich","Cheese Masala",120],["Sandwich","Aloo Makhani",120],["Sandwich","Creamy Cheese",120],["Sandwich","Tandoori Cheese",120],["Sandwich","Cole Slaw",120],["Sandwich","Hot Chillie Toast",120],["Sandwich","Jam Cheese",120],["Sandwich","Aachari Paneer",120],["Sandwich","Paneer Masala",120],["Sandwich","Paneer Corn",120],["Sandwich","Paneer Mayo",120],["Sandwich","Paneer Tandoori",120],["Sandwich","Chocolate",120],["Sandwich","Corn Cheese",120],["Sandwich","Indori Sandwich",130],["Sandwich","Peri Peri Cheese",130],["Sandwich","Nutella",130],["Sandwich","Paneer Cheese",170],
+["French Fries","Regular / Salted",100],["French Fries","Peri Peri",130],["French Fries","Cheesy",140],["French Fries","Schezwan",140],["French Fries","Tandoori",140],["French Fries","Mayo",140],["French Fries","Peri Peri Cheese",180],["French Fries","Pizza Fries",180],
+["Burger & Hotdog","Veg Burger",100],["Burger & Hotdog","Veg Cheese Burger",120],["Burger & Hotdog","Paneer Burger",120],["Burger & Hotdog","Paneer Cheese Burger",140],["Burger & Hotdog","Veg Cheese Hot Dog",100],["Burger & Hotdog","Paneer Hot Dog",120],["Burger & Hotdog","Paneer Cheese Hot Dog",140],
+["Open Toast","Chillie Garlic",150],["Open Toast","Veg Cheese",150],["Open Toast","Baked Beans",220],["Open Toast","Corn Potato",220],["Open Toast","Paneer Makhani",220],["Open Toast","Mushroom",220],["Open Toast","Peri Corn",220],
+["Pasta","White Sauce Pasta",190],["Pasta","Red Sauce Pasta",190],["Pasta","Pink Sauce Pasta",190],["Pasta","Mac N Cheesy Pasta",190],["Pasta","Hot Garlic Sauce Pasta",190],
+["Maggi","Masala Maggi",70],["Maggi","Veg Maggi",90],["Maggi","Double Masala Maggi",90],["Maggi","Butter Maggi",90],["Maggi","Cheese Maggi",110],["Maggi","Garlic Maggi",110],["Maggi","Corn Maggi",110],["Maggi","D.M. Cheese Maggi",130],["Maggi","Veg Tandoori",140],["Maggi","Punjabi Tadka Maggi",140],["Maggi","Punjabi Tadka Cheese",180],["Maggi","Mag N Cheese",180],["Maggi","Mushroom Maggi",220],
+["Pizza","Cheese",160],["Pizza","Cheese Capsicum Onion",170],["Pizza","Corn Pizza",220],["Pizza","Paneer Pizza",220],["Pizza","Mushroom Pizza",220],["Pizza","Maggi Pizza",220],
+["Coffee","Black Hot Coffee",40],["Coffee","Hot Coffee",70],["Coffee","Hot Coffee (Jumbo)",90],["Coffee","Premium Hot Coffee",100],["Coffee","Hot Hazelnut",100],["Coffee","Hot Caramel",100],["Coffee","Hot Coffee Brownie",120],["Coffee","Black Cold Coffee",100],["Coffee","Cold Coffee",120],["Coffee","Irish Cold Coffee",150],["Coffee","Creamy Chocolate Cold Coffee",150],["Coffee","Cold Coffee with Ice-Cream",150],["Coffee","Lactose Free Cold Coffee",150],["Coffee","Premium Cold Coffee",170],["Coffee","Cold Hazelnut",170],["Coffee","Caramel Cold Coffee",170],["Coffee","Brownie Cold Coffee",170],["Coffee","Decaf Cold Coffee",170],
+["Beverages","Green Tea",40],["Beverages","Hot Chocolate",100],["Beverages","Hot Masala Milk",100],["Beverages","Lemon Iced Tea",100],["Beverages","Peach Iced Tea",100],["Beverages","Fresh Lime Soda",100],["Beverages","Hot Chocolate Brownie",150],["Beverages","Strawberry Milkshake",120],["Beverages","Kiwi Milkshake",120],["Beverages","Mango Milkshake",120],["Beverages","Banana Milkshake",120],["Beverages","Chocolate Shake",120],["Beverages","Vanilla Shake",140],["Beverages","Oreo Shake",180],["Beverages","Kit Kat Shake",180],["Beverages","Paan Shake",180],["Beverages","Ajeer Shake",180],["Beverages","Cold Masala Milk",180],["Beverages","Nutella Milk Shake",180],["Beverages","Strawberry Cold Coffee",180],["Beverages","Nutella Kit Kat Shake",250],
+["Ice-Cream Float","Coke Float",120],["Ice-Cream Float","Orange Float",120],
+["Ice-Cream Soda","Rose",120],["Ice-Cream Soda","Khus",120],["Ice-Cream Soda","Lemon",120],["Ice-Cream Soda","Orange",120]
+];
+
+// Add your cafe's real payment UPI ID and WhatsApp number before publishing.
+const CAFE_UPI_ID = "YOUR_UPI_ID@BANK";
+const CAFE_WHATSAPP = "91XXXXXXXXXX";
+const categories=["All",...new Set(menu.map(x=>x[0]))];
+const cart={};
+let active="All";
+const list=document.getElementById("menuList");
+const categoryBar=document.getElementById("categoryBar");
+const search=document.getElementById("menuSearch");
+const cartBar=document.getElementById("cartBar");
+const panel=document.getElementById("cartPanel");
+const checkoutPanel=document.getElementById("checkoutPanel");
+
+function qtyOf(name){return cart[name]?.qty||0}
+function renderCategories(){
+ categoryBar.innerHTML=categories.map(c=>`<button class="category-btn ${active===c?'active':''}" data-cat="${c}">${c}</button>`).join("");
+}
+function renderMenu(){
+ const term=search.value.trim().toLowerCase();
+ const filtered=menu.filter(([cat,name])=>(active==="All"||cat===active)&&name.toLowerCase().includes(term));
+ const groups={};
+ filtered.forEach(item=>(groups[item[0]]??=[]).push(item));
+ list.innerHTML=Object.entries(groups).map(([cat,items])=>`
+  <section class="menu-group">
+   <h2 class="group-title">${cat}</h2>
+   ${items.map(([category,name,price])=>`
+    <div class="menu-item">
+     <div class="item-info"><div class="item-name">${name}</div><div class="item-price">₹${price}</div></div>
+     <div class="item-actions"><div class="qty-entry">
+       <input type="number" min="0" max="99" value="${qtyOf(name)}" data-qty-input="${name}" aria-label="Quantity of ${name}">
+       <button class="add-btn" data-add-item="${name}">ADD</button>
+     </div></div>
+    </div>`).join("")}
+  </section>`).join("");
+ document.getElementById("emptyState").style.display=filtered.length?"none":"block";
+}
+function getTotals(){
+ let count=0,total=0;
+ Object.values(cart).forEach(x=>{count+=x.qty;total+=x.qty*x.price});
+ return {count,total};
+}
+function totals(){
+ const {count,total}=getTotals();
+ cartBar.style.display=count?"block":"none";
+ document.getElementById("cartCount").textContent=`${count} item${count===1?"":"s"} added`;
+ document.getElementById("cartTotal").textContent=`₹${total}`;
+ document.getElementById("panelTotal").textContent=`₹${total}`;
+ document.getElementById("checkoutTotal").textContent=`₹${total}`;
+}
+function renderCart(){
+ const lines=Object.entries(cart).filter(([_,x])=>x.qty>0);
+ document.getElementById("cartLines").innerHTML=lines.length?lines.map(([name,x])=>`
+  <div class="cart-line"><span>${name} × ${x.qty}<br><b>₹${x.price*x.qty}</b></span><button data-remove="${name}">Remove</button></div>`).join(""):"Your cart is empty.";
+ totals();
+}
+function orderMessage(){
+ const {total}=getTotals();
+ const name=document.getElementById("customerName").value.trim();
+ const phone=document.getElementById("customerPhone").value.trim();
+ const type=document.getElementById("orderType").value;
+ const table=document.getElementById("tableNumber").value.trim();
+ const car=document.getElementById("carNumber").value.trim();
+ const pickup=document.getElementById("pickupName").value.trim();
+ const notes=document.getElementById("orderNotes").value.trim();
+ const items=Object.entries(cart).filter(([_,x])=>x.qty>0).map(([n,x])=>`• ${n} x ${x.qty} = ₹${x.price*x.qty}`).join("\n");
+ return `Hello Lotus Hut Cafe! New order:\n\n${items}\n\nTotal: ₹${total}\nName: ${name}\nMobile: ${phone}\nService: ${type}${type==="Dine-in"?"\nTable number: "+table:""}${type==="Drive-in"?"\nCar number: "+car:""}${type==="Takeaway"&&pickup?"\nPickup name: "+pickup:""}${notes?"\nInstructions: "+notes:""}\n\nPlease confirm my order.`;
+}
+function validateCustomer(){
+ const form=document.getElementById("checkoutForm");
+ if(!form.reportValidity())return false;
+ if(!getTotals().count){showError("Please add at least one item to your cart.");return false;}
+ const mode=document.getElementById("orderType").value;
+ if(mode==="Dine-in"&&!document.getElementById("tableNumber").value.trim()){showError("Please enter your table number.");return false;}
+ if(mode==="Drive-in"&&!document.getElementById("carNumber").value.trim()){showError("Please enter your car number so our staff can find you.");return false;}
+ return true;
+}
+function showError(msg){
+ const el=document.getElementById("checkoutError");el.textContent=msg;el.style.display="block";
+}
+categoryBar.addEventListener("click",e=>{
+ const b=e.target.closest("[data-cat]");if(!b)return;active=b.dataset.cat;renderCategories();renderMenu();
+});
+search.addEventListener("input",renderMenu);
+list.addEventListener("click",e=>{
+ const add=e.target.closest("[data-add-item]");if(!add)return;
+ const name=add.dataset.addItem;
+ const input=list.querySelector(`[data-qty-input="${CSS.escape(name)}"]`);
+ const qty=Math.max(0,Math.min(99,parseInt(input.value||"0",10)||0));
+ const item=menu.find(x=>x[1]===name);
+ if(qty===0){delete cart[name];}
+ else{cart[name]={price:item[2],qty};}
+ renderCart();
+ add.textContent="ADDED ✓";
+ setTimeout(()=>{if(add.isConnected)add.textContent="ADD";},900);
+});
+document.getElementById("viewCart").addEventListener("click",()=>{renderCart();panel.classList.add("open")});
+document.getElementById("closeCart").addEventListener("click",()=>panel.classList.remove("open"));
+panel.addEventListener("click",e=>{if(e.target===panel)panel.classList.remove("open")});
+document.getElementById("cartLines").addEventListener("click",e=>{
+ const b=e.target.closest("[data-remove]");if(!b)return;delete cart[b.dataset.remove];renderCart();renderMenu();
+});
+document.getElementById("checkoutForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ if(!validateCustomer())return;
+ if(CAFE_UPI_ID==="YOUR_UPI_ID@BANK"){showError("Add Lotus Hut's real UPI ID in the CAFE_UPI_ID setting before enabling payments.");return;}
+ const {total}=getTotals();
+ const upiUrl=`upi://pay?pa=${encodeURIComponent(CAFE_UPI_ID)}&pn=${encodeURIComponent("Lotus Hut Cafe")}&am=${total.toFixed(2)}&cu=INR&tn=${encodeURIComponent("Lotus Hut Cafe Order")}`;
+ window.location.href=upiUrl;
+});
+document.getElementById("sendOrder").addEventListener("click",()=>{
+ if(!validateCustomer())return;
+ if(CAFE_WHATSAPP==="91XXXXXXXXXX"){showError("Add the cafe's WhatsApp number in the CAFE_WHATSAPP setting before sending orders.");return;}
+ const url=`https://wa.me/${CAFE_WHATSAPP}?text=${encodeURIComponent(orderMessage())}`;
+ window.open(url,"_blank","noopener");
+});
+document.getElementById("viewCart").addEventListener("click",()=>{
+ renderCart();panel.classList.add("open");
+});
+const originalViewCart=document.getElementById("viewCart");
+originalViewCart.addEventListener("click",()=>{
+ if(getTotals().count===0)return;
+ document.getElementById("checkoutTotal").textContent=`₹${getTotals().total}`;
+});
+document.getElementById("closeCheckout").addEventListener("click",()=>checkoutPanel.classList.remove("open"));
+function updateServiceFields(){
+ const mode=document.getElementById("orderType").value;
+ document.getElementById("tableWrap").style.display=mode==="Dine-in"?"block":"none";
+ document.getElementById("carWrap").style.display=mode==="Drive-in"?"block":"none";
+ document.getElementById("pickupWrap").style.display=mode==="Takeaway"?"block":"none";
+}
+document.getElementById("orderType").addEventListener("change",updateServiceFields);
+updateServiceFields();
+// Optional QR table link: print a QR code pointing to this page with ?table=5, for example.
+const tableFromQR=new URLSearchParams(location.search).get("table");
+if(tableFromQR){
+ document.getElementById("orderType").value="Dine-in";
+ document.getElementById("tableNumber").value=tableFromQR;
+ updateServiceFields();
+}
+document.getElementById("viewCart").addEventListener("dblclick",()=>{});
+document.getElementById("cartPanel").addEventListener("click",e=>{
+ const checkout=e.target.closest("#goCheckout");if(checkout){panel.classList.remove("open");checkoutPanel.classList.add("open");}
+});
+const cartSheet=document.querySelector(".cart-sheet");
+const checkoutButton=document.createElement("button");
+checkoutButton.className="pay-btn";
+checkoutButton.type="button";
+checkoutButton.textContent="CONTINUE TO CUSTOMER DETAILS";
+checkoutButton.addEventListener("click",()=>{
+ if(!getTotals().count)return;
+ panel.classList.remove("open");checkoutPanel.classList.add("open");totals();
+});
+cartSheet.appendChild(checkoutButton);
+checkoutPanel.addEventListener("click",e=>{if(e.target===checkoutPanel)checkoutPanel.classList.remove("open")});
+renderCategories();renderMenu();renderCart();
+</script>
+</body>
+</html>

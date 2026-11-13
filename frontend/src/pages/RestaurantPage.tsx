@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/Input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Loader } from '@/components/ui/Loader';
 import { Store, Upload, CheckCircle2, ShieldAlert } from 'lucide-react';
+import logoImg from '@/assets/logo.jpeg';
 
 const schema = z.object({
   name: z.string().min(1, 'Restaurant name is required'),
@@ -24,7 +25,7 @@ export function RestaurantPage() {
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin';
   const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>('/logo.jpeg');
+  const [previewUrl, setPreviewUrl] = useState<string | null>(logoImg);
   const [success, setSuccess] = useState(false);
 
   const { data, isLoading } = useRestaurant();
@@ -52,7 +53,7 @@ export function RestaurantPage() {
       if (r.logo) {
         setPreviewUrl(r.logo);
       } else {
-        setPreviewUrl('/logo.jpeg');
+        setPreviewUrl(logoImg);
       }
     }
   }, [data, reset]);

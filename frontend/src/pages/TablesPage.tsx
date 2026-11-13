@@ -19,6 +19,7 @@ import {
   Sparkles,
   ShoppingBag,
 } from 'lucide-react';
+import logoImg from '@/assets/logo.jpeg';
 
 export function TablesPage() {
   const { data: restData } = useRestaurant();
@@ -157,7 +158,7 @@ export function TablesPage() {
             {/* Restaurant Brand Title */}
             <div className="mb-6 flex flex-col items-center">
               <img
-                src="/logo.jpeg"
+                src={logoImg}
                 alt="Lotus Hut"
                 className="mb-2 h-16 w-16 rounded-full object-cover shadow-md ring-2 ring-red-100"
               />

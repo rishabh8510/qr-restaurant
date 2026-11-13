@@ -2,12 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FiTrash2, FiMinus, FiPlus, FiShoppingBag, FiArrowRight } from "react-icons/fi";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { Sheet } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
 export default function CartSheet() {
+  const router = useRouter();
+  const { isLoggedIn, openLoginModal } = useAuth();
   const {
     isCartOpen,
     closeCart,
@@ -19,6 +23,19 @@ export default function CartSheet() {
     totalPrice,
     totalItems,
   } = useCart();
+
+  const handleCheckoutClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!isLoggedIn) {
+      openLoginModal(() => {
+        closeCart();
+        router.push("/checkout");
+      });
+      return;
+    }
+    closeCart();
+    router.push("/checkout");
+  };
 
   return (
     <Sheet
@@ -134,12 +151,12 @@ export default function CartSheet() {
               </div>
             </div>
 
-            <Link href="/checkout" onClick={closeCart} className="mt-4 block">
+            <button type="button" onClick={handleCheckoutClick} className="mt-4 block w-full">
               <Button variant="primary" className="w-full gap-2 text-base font-bold">
                 <span>Proceed to Checkout</span>
                 <FiArrowRight className="h-4 w-4" />
               </Button>
-            </Link>
+            </button>
           </div>
         </div>
       )}

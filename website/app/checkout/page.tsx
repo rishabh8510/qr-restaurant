@@ -11,6 +11,7 @@ import {
   FiDollarSign,
   FiGlobe,
   FiCheckCircle,
+  FiLock,
 } from "react-icons/fi";
 import { useCart } from "@/context/CartContext";
 import { placeOrder, quoteOrder, OrderQuote } from "@/lib/api";
@@ -179,6 +180,35 @@ export default function CheckoutPage() {
       cancelled = true;
     };
   }, [cartItems, token, orderType]);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      openLoginModal();
+    }
+  }, [isLoggedIn, openLoginModal]);
+
+  if (!isLoggedIn) {
+    return (
+      <section className="mx-auto w-full max-w-lg px-4 py-16 text-center">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 ring-1 ring-amber-100">
+          <FiLock size={28} />
+        </div>
+        <h2 className="text-xl font-bold tracking-tight text-gray-900">
+          Login Required to Checkout
+        </h2>
+        <p className="mx-auto mt-2 max-w-xs text-xs text-gray-500">
+          Please sign in with your mobile number to view payment options, choose your table, and place your order.
+        </p>
+        <button
+          type="button"
+          onClick={() => openLoginModal()}
+          className="mt-6 w-full max-w-xs rounded-xl bg-amber-400 px-8 py-3 text-sm font-bold text-black shadow-md hover:bg-amber-500 cursor-pointer mx-auto block"
+        >
+          Sign In with Mobile OTP
+        </button>
+      </section>
+    );
+  }
 
   if (cartItems.length === 0 && step !== "done") {
     return (

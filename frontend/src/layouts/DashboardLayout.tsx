@@ -20,6 +20,7 @@ import {
   Coffee,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import logoImg from '@/assets/logo.jpeg';
 import clsx from 'clsx';
 
 const adminNav = [
@@ -96,7 +97,7 @@ export function DashboardLayout() {
         <div className="flex h-18 shrink-0 items-center justify-between border-b border-slate-800/80 px-5">
           <div className="flex items-center gap-3">
             <img
-              src="/logo.jpeg"
+              src={logoImg}
               alt="Lotus Hut"
               className="h-10 w-10 shrink-0 rounded-full object-cover shadow-md shadow-red-950/40 ring-2 ring-red-500/40"
             />

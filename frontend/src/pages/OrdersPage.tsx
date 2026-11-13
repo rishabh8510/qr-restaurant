@@ -99,6 +99,17 @@ function formatTime(iso?: string) {
   });
 }
 
+function getServiceLabel(order: Order) {
+  const type = String(order.orderType || '').toLowerCase();
+  if (order.tableNumber || type === 'dine-in') {
+    return `TABLE ${order.tableNumber || '—'}`;
+  }
+  if (type === 'drive-in') {
+    return `DRIVE-IN · ${order.customerPhone || 'CAR'}`;
+  }
+  return 'TAKEAWAY';
+}
+
 function OrderCard({
   order,
   busy,
@@ -117,179 +128,155 @@ function OrderCard({
   onPrintKot: () => void;
 }) {
   const st = String(order.status || 'pending').toLowerCase();
-  const cfg = STATUS[st] || STATUS.pending;
-  const itemCount = (order.items || []).reduce(
-    (s, i) => s + Number(i.quantity || 0),
-    0
-  );
+  const when = formatTime(order.createdAt);
+  const serviceText = getServiceLabel(order);
 
   return (
-    <Card className="flex flex-col justify-between overflow-hidden border-gray-100 bg-white transition-all duration-200 hover:shadow-md hover:border-gray-200">
-      <CardContent className="flex flex-1 flex-col p-4">
-        {/* Top bar: Order ID & Status Badge */}
-        <div className="flex items-start justify-between gap-2">
+    <article className="order flex flex-col justify-between bg-white border border-[#e8e8e8] rounded-[11px] p-3 shadow-2xs hover:border-gray-300 transition">
+      <div>
+        {/* Head: Order ID & Service Badge */}
+        <div className="order-head flex items-start justify-between gap-2.5">
           <div>
-            <h4 className="text-sm font-black tracking-tight text-gray-900">
-              {order.orderNumber}
-            </h4>
-            <div className="mt-0.5 flex items-center gap-1.5 text-xs text-gray-500">
-              <Clock className="h-3 w-3 text-gray-400" />
-              <span>{formatTime(order.createdAt)}</span>
-              {order.orderType && (
-                <>
-                  <span>•</span>
-                  <span className="capitalize font-medium">{order.orderType}</span>
-                </>
-              )}
+            <div className="oid text-[16px] font-black text-[#222]">
+              {order.orderNumber || 'New Order'}
+            </div>
+            <div className="time text-[11px] text-[#888] mt-1 font-medium">
+              {when}
             </div>
           </div>
-          <Badge variant={cfg.variant} className="text-[10px] font-bold">
-            {cfg.label}
-          </Badge>
+          <span className="service text-[12px] font-extrabold bg-[#fff2df] text-[#8a4d00] px-2.5 py-1.5 rounded-[8px] shrink-0 tracking-wide">
+            {serviceText}
+          </span>
         </div>
 
-        {/* Customer & Table Information */}
-        <div className="mt-3 rounded-xl bg-gray-50/80 p-2.5 text-xs">
-          <div className="flex items-center justify-between">
-            <span className="font-bold text-gray-900 truncate">
-              {order.customerName || 'Guest Customer'}
-            </span>
-            {order.tableNumber ? (
-              <span className="rounded-md bg-amber-100 px-2 py-0.5 text-[11px] font-black text-amber-900 shrink-0">
-                Table #{order.tableNumber}
-              </span>
-            ) : (
-              <span className="font-semibold text-gray-500 tabular-nums">
-                {itemCount} {itemCount === 1 ? 'item' : 'items'}
-              </span>
-            )}
-          </div>
-          <div className="mt-1 flex items-center justify-between text-gray-500">
-            <span>{order.customerPhone || (order.tableNumber ? `${itemCount} items` : 'No phone')}</span>
-            {order.tableNumber && (
-              <span className="font-medium text-gray-400 tabular-nums">
-                {itemCount} {itemCount === 1 ? 'item' : 'items'}
-              </span>
-            )}
-          </div>
-        </div>
+        {/* Customer Info */}
+        <div className="customer text-[12px] leading-relaxed my-2 text-[#444]">
+          <span className="font-bold text-[#222]">{order.customerName || 'Customer'}</span>
+          <span className="text-[#888]"> · </span>
+          <span>{order.customerPhone || 'No phone'}</span>
 
-        {/* Item preview snippet */}
-        <div className="mt-3 flex-1 space-y-1">
-          {(order.items || []).slice(0, 3).map((it, idx) => (
-            <div key={idx} className="flex justify-between text-xs text-gray-600">
-              <span className="truncate pr-2 font-medium">
-                {it.quantity}× {it.name}
-              </span>
-              <span className="shrink-0 tabular-nums text-gray-900 font-semibold">
-                {money(Number(it.price) * Number(it.quantity || 1))}
-              </span>
+          {order.notes && (
+            <div className="mt-2 p-2 bg-[#fff4d6] border-l-[3px] border-[#ed101c] rounded-[6px] text-[#754b00] text-[11px] leading-snug">
+              <b>Customer instruction:</b> {order.notes}
             </div>
-          ))}
-          {(order.items || []).length > 3 && (
-            <p className="text-[11px] font-medium text-gray-400">
-              +{order.items.length - 3} more items
-            </p>
           )}
         </div>
 
-        {/* Total & Action Row */}
-        <div className="mt-4 border-t border-gray-100 pt-3">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">Total</span>
-            <span className="text-base font-black tabular-nums text-gray-900">
-              {money(order.total)}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-1.5">
-            {st === 'pending' && !order.assignedStaffId && (
-              <>
-                <Button
-                  size="sm"
-                  variant="primary"
-                  disabled={busy}
-                  onClick={onAccept}
-                  className="flex-1 gap-1 bg-emerald-600 hover:bg-emerald-700 text-xs"
-                >
-                  <Check className="h-3.5 w-3.5" />
-                  <span>Accept</span>
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={busy}
-                  onClick={onReject}
-                  className="h-8 px-2.5 text-xs text-red-600 hover:bg-red-50 hover:text-red-700"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </Button>
-              </>
-            )}
-
-            {st === 'confirmed' && (
-              <Button
-                size="sm"
-                variant="default"
-                disabled={busy}
-                onClick={() => onAdvance('preparing')}
-                className="flex-1 gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-xs text-white"
-              >
-                <ChefHat className="h-3.5 w-3.5" />
-                <span>Prepare</span>
-              </Button>
-            )}
-
-            {st === 'preparing' && (
-              <Button
-                size="sm"
-                variant="default"
-                disabled={busy}
-                onClick={() => onAdvance('ready')}
-                className="flex-1 gap-1.5 bg-purple-600 hover:bg-purple-700 text-xs text-white"
-              >
-                <BellRing className="h-3.5 w-3.5" />
-                <span>Ready</span>
-              </Button>
-            )}
-
-            {st === 'ready' && (
-              <Button
-                size="sm"
-                variant="primary"
-                disabled={busy}
-                onClick={() => onAdvance('completed')}
-                className="flex-1 gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-xs"
-              >
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                <span>Complete</span>
-              </Button>
-            )}
-
-            {/* Quick Print KOT Button */}
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={onPrintKot}
-              className="h-8 px-2 text-xs text-amber-700 hover:bg-amber-50 hover:text-amber-900 border-amber-200"
-              title="Print Kitchen Ticket (KOT)"
-            >
-              <Printer className="h-3.5 w-3.5" />
-            </Button>
-
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={onView}
-              className="h-8 px-2 text-xs text-gray-600 hover:text-gray-900"
-              title="View full order details"
-            >
-              <Eye className="h-3.5 w-3.5" />
-            </Button>
-          </div>
+        {/* Items List */}
+        <div className="items border-t border-b border-[#eee] py-1.5 my-1.5 space-y-1">
+          {(order.items || []).map((it, idx) => (
+            <div key={idx} className="item flex justify-between gap-2 text-[12px]">
+              <span className="text-[#333] truncate">
+                {it.name} × {it.quantity}
+              </span>
+              <b className="text-[#222] shrink-0 tabular-nums font-bold">
+                {money(Number(it.price) * Number(it.quantity || 1))}
+              </b>
+            </div>
+          ))}
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Total */}
+        <div className="total flex justify-between text-[14px] font-black py-1.5 text-[#222]">
+          <span>Total</span>
+          <span className="tabular-nums">{money(order.total)}</span>
+        </div>
+      </div>
+
+      {/* Action Row */}
+      <div className="mt-2 pt-2 border-t border-gray-100 flex items-center gap-1.5">
+        {st === 'pending' && (
+          <>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={onAccept}
+              className="complete flex-1 bg-[#159447] text-white py-2 px-3 text-[12px] font-black rounded-[8px] hover:bg-green-700 active:scale-98 transition cursor-pointer flex items-center justify-center gap-1"
+            >
+              <Check className="h-3.5 w-3.5" />
+              <span>ACCEPT ORDER</span>
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={onReject}
+              className="h-8 w-8 shrink-0 flex items-center justify-center rounded-[8px] border border-red-200 text-red-600 hover:bg-red-50 text-xs transition cursor-pointer"
+              title="Reject Order"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </>
+        )}
+
+        {st === 'confirmed' && (
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => onAdvance('preparing')}
+            className="complete flex-1 bg-indigo-600 text-white py-2 px-3 text-[12px] font-black rounded-[8px] hover:bg-indigo-700 active:scale-98 transition cursor-pointer flex items-center justify-center gap-1.5"
+          >
+            <ChefHat className="h-3.5 w-3.5" />
+            <span>START PREPARING</span>
+          </button>
+        )}
+
+        {st === 'preparing' && (
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => onAdvance('ready')}
+            className="complete flex-1 bg-purple-600 text-white py-2 px-3 text-[12px] font-black rounded-[8px] hover:bg-purple-700 active:scale-98 transition cursor-pointer flex items-center justify-center gap-1.5"
+          >
+            <BellRing className="h-3.5 w-3.5" />
+            <span>MARK AS READY</span>
+          </button>
+        )}
+
+        {st === 'ready' && (
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => onAdvance('completed')}
+            className="complete flex-1 bg-[#159447] text-white py-2 px-3 text-[12px] font-black rounded-[8px] hover:bg-green-700 active:scale-98 transition cursor-pointer flex items-center justify-center gap-1.5"
+          >
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            <span>✓ COMPLETE ORDER</span>
+          </button>
+        )}
+
+        {st === 'completed' && (
+          <div className="completed-label flex-1 bg-[#e9f7ed] text-[#168343] text-center py-2 px-3 rounded-[8px] font-black text-[12px]">
+            ✓ COMPLETED
+          </div>
+        )}
+
+        {st === 'cancelled' && (
+          <div className="flex-1 bg-red-50 text-red-600 text-center py-2 px-3 rounded-[8px] font-black text-[12px]">
+            CANCELLED
+          </div>
+        )}
+
+        {/* Print KOT */}
+        <button
+          type="button"
+          onClick={onPrintKot}
+          className="h-8 w-8 shrink-0 flex items-center justify-center rounded-[8px] border border-amber-200 text-amber-700 hover:bg-amber-50 text-xs transition cursor-pointer"
+          title="Print Kitchen Ticket (KOT)"
+        >
+          <Printer className="h-3.5 w-3.5" />
+        </button>
+
+        {/* View Details */}
+        <button
+          type="button"
+          onClick={onView}
+          className="h-8 w-8 shrink-0 flex items-center justify-center rounded-[8px] border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs transition cursor-pointer"
+          title="View full order details"
+        >
+          <Eye className="h-3.5 w-3.5" />
+        </button>
+      </div>
+    </article>
   );
 }
 
@@ -445,9 +432,16 @@ export function OrdersPage() {
       {/* Page Title & Live Connection Status */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-gray-900">Live Orders</h1>
-          <p className="text-xs font-medium text-gray-500">
-            Real-time kitchen order display & fulfillment board
+          <div className="top flex items-center gap-3">
+            <h1 className="text-[22px] font-black tracking-tight text-[#222]">
+              {filter === 'completed' ? 'Completed Orders' : 'New Orders'}
+            </h1>
+            <span className="count bg-[#ed101c] text-white rounded-full px-3 py-1 text-[12px] font-extrabold tracking-wide shadow-xs">
+              {counts.pending || 0} NEW
+            </span>
+          </div>
+          <p className="text-xs font-medium text-[#777] mt-1">
+            Real-time kitchen order display &amp; fulfillment board
           </p>
         </div>
 
@@ -504,7 +498,7 @@ export function OrdersPage() {
             size="sm"
             variant="outline"
             onClick={() => load()}
-            className="gap-1.5 text-xs"
+            className="gap-1.5 text-xs font-bold"
           >
             <RefreshCw className="h-3.5 w-3.5 text-gray-500" />
             <span>Refresh</span>
@@ -514,7 +508,7 @@ export function OrdersPage() {
 
       {/* Filter Tabs & Search */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-1.5">
+        <div className="tabs flex flex-wrap gap-2">
           {STATUS_TABS.map((t) => {
             const active = filter === t.key;
             const count = counts[t.key] || 0;
@@ -523,16 +517,16 @@ export function OrdersPage() {
                 key={t.key}
                 type="button"
                 onClick={() => setFilter(t.key)}
-                className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all duration-150 ${
+                className={`tab rounded-full px-4 py-2 text-[13px] font-bold transition-all ${
                   active
-                    ? 'bg-gray-900 text-white shadow-xs'
-                    : 'border border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
+                    ? 'bg-[#222] text-white border border-[#222] shadow-xs'
+                    : 'border border-[#ddd] bg-white text-[#444] hover:bg-gray-50'
                 }`}
               >
                 <span>{t.label}</span>
                 <span
-                  className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
-                    active ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-600'
+                  className={`ml-1.5 rounded-full px-2 py-0.5 text-[11px] font-extrabold ${
+                    active ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700'
                   }`}
                 >
                   {count}
@@ -556,19 +550,19 @@ export function OrdersPage() {
 
       {/* Orders Grid */}
       {filtered.length === 0 ? (
-        <Card className="border-dashed p-12 text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-50 text-gray-400">
-            <Inbox className="h-7 w-7" />
+        <div className="empty bg-white p-12 text-center rounded-[12px] border border-[#e8e8e8] text-[#777] text-sm font-medium">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-50 text-gray-400">
+            <Inbox className="h-6 w-6" />
           </div>
-          <h3 className="mt-4 text-base font-bold text-gray-900">No orders found</h3>
+          <h3 className="text-base font-bold text-gray-900">No orders found</h3>
           <p className="mt-1 text-xs text-gray-500">
             {filter === 'all'
               ? 'New orders from your cafe will stream here in real time.'
               : `No orders currently matching "${filter}" status.`}
           </p>
-        </Card>
+        </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="orders grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filtered.map((o) => (
             <OrderCard
               key={o.id}

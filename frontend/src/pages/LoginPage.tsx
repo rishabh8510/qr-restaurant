@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PageLoader } from '@/components/ui/Loader';
 import { Card, CardContent } from '@/components/ui/Card';
-import { UtensilsCrossed, AlertCircle, ArrowRight, ShieldCheck } from 'lucide-react';
+import { UtensilsCrossed, AlertCircle, ArrowRight, ShieldCheck, Eye, EyeOff } from 'lucide-react';
+import logoImg from '@/assets/logo.jpeg';
 
 const schema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -21,6 +22,7 @@ export function LoginPage() {
   const { login, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -52,7 +54,7 @@ export function LoginPage() {
         {/* Brand header */}
         <div className="mb-8 text-center">
           <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full overflow-hidden shadow-lg ring-4 ring-red-100">
-            <img src="/logo.jpeg" alt="Lotus Hut" className="h-full w-full object-cover" />
+            <img src={logoImg} alt="Lotus Hut" className="h-full w-full object-cover" />
           </div>
           <h1 className="text-2xl font-black tracking-tight text-gray-900">Lotus Hut</h1>
           <p className="mt-1 text-xs font-semibold text-gray-500">
@@ -88,15 +90,43 @@ export function LoginPage() {
                 error={errors.email?.message}
               />
 
-              <Input
-                label="Password"
-                type="password"
-                id="password"
-                placeholder="••••••••"
-                autoComplete="current-password"
-                {...register('password')}
-                error={errors.password?.message}
-              />
+              <div className="w-full">
+                <label
+                  htmlFor="password"
+                  className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-gray-600"
+                >
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    id="password"
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                    {...register('password')}
+                    className={`flex h-10 w-full rounded-xl border border-gray-200 bg-white px-3.5 pr-10 py-2 text-sm shadow-2xs transition-colors placeholder:text-gray-400 focus-visible:border-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-900 disabled:cursor-not-allowed disabled:opacity-50 ${
+                      errors.password?.message ? 'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500' : ''
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1 text-gray-400 hover:text-gray-700 transition cursor-pointer"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+                {errors.password?.message && (
+                  <p className="mt-1.5 text-xs font-medium text-red-500">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
 
               <Button
                 type="submit"
@@ -120,3 +150,4 @@ export function LoginPage() {
     </div>
   );
 }
+

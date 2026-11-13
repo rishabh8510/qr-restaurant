@@ -123,6 +123,10 @@ export default function Header() {
             <button
               type="button"
               onClick={() => {
+                if (!isLoggedIn) {
+                  openLoginModal();
+                  return;
+                }
                 const next = prompt("Enter your Table Number:", tableNumber);
                 if (next !== null) setTableNumber(next.trim() || null);
               }}
@@ -136,6 +140,10 @@ export default function Header() {
             <button
               type="button"
               onClick={() => {
+                if (!isLoggedIn) {
+                  openLoginModal();
+                  return;
+                }
                 const next = prompt("Dining in? Enter your Table Number:");
                 if (next) setTableNumber(next.trim());
               }}
@@ -149,7 +157,13 @@ export default function Header() {
           {/* Cart Trigger */}
           <button
             type="button"
-            onClick={openCart}
+            onClick={() => {
+              if (!isLoggedIn) {
+                openLoginModal();
+                return;
+              }
+              openCart();
+            }}
             className="relative flex h-10 items-center gap-2 rounded-2xl bg-stone-900 px-3.5 sm:px-4 text-white shadow-md shadow-stone-900/10 transition-all hover:bg-black active:scale-98 cursor-pointer"
             aria-label="View Cart"
           >

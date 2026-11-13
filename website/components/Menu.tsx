@@ -11,7 +11,7 @@ import Toast from "@/components/Toast";
 import { fetchPublicMenu, likeProduct, WebsiteSettings } from "@/lib/api";
 
 type LocalMenu = {
-  categories: { id: string; name: string; image: string }[];
+  categories: { id: string; name: string; image: string; slug?: string | null }[];
   subCategories: {
     id: string;
     name: string;
@@ -319,12 +319,194 @@ const handleLike = (e: React.MouseEvent, item: LocalMenu['items'][number]) => {
   });
 };
 
+  const groupedItems = useMemo(() => {
+    const groups: Record<string, LocalMenu["items"]> = {};
+    for (const item of filteredItems) {
+      const cat = menu.categories.find(
+        (c) => c.id === item.category || c.slug === item.category
+      );
+      const catName = cat?.name || item.category || "Our Menu";
+      if (!groups[catName]) groups[catName] = [];
+      groups[catName].push(item);
+    }
+    return groups;
+  }, [filteredItems, menu.categories]);
+
   return (
-    <section className="mx-auto w-full max-w-7xl px-6 py-10">
+    <section className="mx-auto w-full max-w-7xl px-4 sm:px-6 py-4 sm:py-10">
       {loading && (
         <p className="mb-4 text-center text-sm text-gray-400">Loading menu…</p>
       )}
 
+      {/* ========================================================================= */}
+      {/* MOBILE SCREEN MENU VIEW (Exact match to lotus-hut-drive-in-table-order.html) */}
+      {/* ========================================================================= */}
+      <div className="block md:hidden max-w-[850px] mx-auto">
+        {/* Quick Heading */}
+        <div className="mb-3 px-1">
+          <h1 className="text-[22px] font-black text-[#211512] tracking-tight leading-tight">
+            Order Your Favourites
+          </h1>
+          <p className="text-[12px] text-[#777] mt-1 font-medium">
+            Quick order for table service, drive-in or takeaway.
+          </p>
+        </div>
+
+        {/* Mobile Search Box */}
+        <div className="relative my-2.5">
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search food or drinks..."
+            className="w-full bg-white border border-[#e5e5e5] rounded-[10px] px-3.5 py-3 text-[14px] text-[#211512] outline-none focus:border-[#ed101c] shadow-2xs placeholder:text-[#999]"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-gray-400"
+            >
+              <FiX className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Mobile Category Bar (Sticky Horizontal Scroll with Pills) */}
+        <nav className="sticky top-16 z-30 -mx-4 px-4 bg-[#f7f7f7] py-2 flex gap-1.5 overflow-x-auto scrollbar-none border-b border-gray-200/60">
+          <button
+            type="button"
+            onClick={() => setSelectedCategory("all")}
+            className={`shrink-0 rounded-full px-3.5 py-2 text-[12px] font-bold transition-all ${
+              selectedCategory === "all"
+                ? "bg-[#ed101c] text-white border border-[#ed101c] shadow-xs"
+                : "bg-white border border-[#e5e5e5] text-[#333]"
+            }`}
+          >
+            All
+          </button>
+          {menu.categories.map((c) => {
+            const active = selectedCategory === c.id || selectedCategory === c.slug;
+            return (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => setSelectedCategory(active ? "all" : c.id)}
+                className={`shrink-0 rounded-full px-3.5 py-2 text-[12px] font-bold transition-all ${
+                  active
+                    ? "bg-[#ed101c] text-white border border-[#ed101c] shadow-xs"
+                    : "bg-white border border-[#e5e5e5] text-[#333]"
+                }`}
+              >
+                {c.name}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Mobile Grouped Items List */}
+        <div className="mt-3 space-y-5 pb-24">
+          {Object.entries(groupedItems).map(([catName, items]) => (
+            <div key={catName} className="menu-group">
+              <h2 className="text-[15px] font-extrabold text-[#211512] my-3 px-1">
+                {catName}
+              </h2>
+              <div className="space-y-2">
+                {items.map((item) => {
+                  const quantity = getQuantity(item.id);
+                  return (
+                    <div
+                      key={item.id}
+                      className="bg-white border border-[#eee] rounded-[11px] p-3 flex items-center justify-between gap-3 min-h-[68px] shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
+                    >
+                      {/* Item Info */}
+                      <div
+                        onClick={() => setSelectedItem(item as MenuItem)}
+                        className="min-w-0 flex-1 cursor-pointer"
+                      >
+                        <div className="flex items-center gap-1.5">
+                          <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[2px] border border-emerald-600 bg-white">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+                          </span>
+                          <h3 className="text-[13px] font-bold text-[#211512] leading-snug line-clamp-2">
+                            {item.name}
+                          </h3>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1 pl-5">
+                          <span className="text-[15px] font-extrabold text-[#211512]">
+                            ₹{item.price}
+                          </span>
+                          {item.oldPrice && (
+                            <span className="text-[11px] text-gray-400 line-through">
+                              ₹{item.oldPrice}
+                            </span>
+                          )}
+                          {item.isBestseller && (
+                            <span className="rounded-full bg-amber-50 border border-amber-200 px-1.5 py-0.2 text-[9px] font-black text-amber-900">
+                              ★ Best
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Item Actions */}
+                      <div className="shrink-0 flex items-center justify-end min-w-[62px]">
+                        {quantity === 0 ? (
+                          <button
+                            type="button"
+                            onClick={(e) => handleAddToCart(e, item)}
+                            className="bg-white border-[1.5px] border-[#ed101c] text-[#ed101c] rounded-[7px] px-3.5 py-1.5 text-[12px] font-black min-w-[60px] shadow-2xs hover:bg-red-50 active:scale-95 transition cursor-pointer"
+                          >
+                            ADD
+                          </button>
+                        ) : (
+                          <div className="flex items-center gap-2.5 bg-[#fff4f4] border border-[#ffd4d4] rounded-[7px] px-2 py-1 text-[#ed101c] font-black text-xs">
+                            <button
+                              type="button"
+                              onClick={(e) => handleDecrease(e, item.id)}
+                              className="text-base leading-none px-1 hover:opacity-70 active:scale-90"
+                            >
+                              −
+                            </button>
+                            <span className="tabular-nums min-w-[14px] text-center font-black">
+                              {quantity}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={(e) => handleIncrease(e, item.id)}
+                              className="text-base leading-none px-1 hover:opacity-70 active:scale-90"
+                            >
+                              +
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+
+          {filteredItems.length === 0 && (
+            <div className="text-center py-12 bg-white rounded-xl border border-gray-200 p-6 text-gray-500">
+              <p className="text-xs font-semibold">No items found. Try another search.</p>
+              <button
+                type="button"
+                onClick={clearAllFilters}
+                className="mt-2 text-xs font-bold text-[#ed101c] underline"
+              >
+                Reset filters
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* DESKTOP SCREEN MENU VIEW (Rich grid & filters) */}
+      {/* ========================================================================= */}
+      <div className="hidden md:block">
       {/* Search + Filter */}
       <div className="sticky top-0 z-40 -mx-6 border-b border-gray-200 bg-white/95 px-6 py-3 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/90">
         <div className="flex gap-2">
@@ -902,6 +1084,7 @@ const handleLike = (e: React.MouseEvent, item: LocalMenu['items'][number]) => {
             </button>
           </div>
         )}
+      </div>
       </div>
 
       <MenuItemDetails item={selectedItem} onClose={() => setSelectedItem(null)} />

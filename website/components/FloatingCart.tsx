@@ -1,12 +1,13 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { FiShoppingBag, FiArrowRight } from "react-icons/fi";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function FloatingCart() {
   const { totalItems, totalPrice, openCart } = useCart();
+  const { isLoggedIn, openLoginModal } = useAuth();
   const pathname = usePathname();
 
   // Hide on checkout or orders page
@@ -22,35 +23,32 @@ export default function FloatingCart() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 50, opacity: 0 }}
           transition={{ type: "spring", stiffness: 350, damping: 25 }}
-          className="fixed bottom-5 left-4 right-4 z-50 flex justify-center sm:bottom-6"
+          className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#eee] px-4 py-2.5 pb-[calc(10px+env(safe-area-inset-bottom))] shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
         >
-          <button
-            type="button"
-            onClick={openCart}
-            className="flex w-full max-w-md items-center justify-between rounded-2xl bg-gray-900 px-5 py-3.5 text-white shadow-xl transition-all duration-200 hover:bg-black hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
-          >
-            <div className="flex items-center gap-3">
-              <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white/10">
-                <FiShoppingBag className="h-5 w-5 text-amber-400" />
-                <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-xs font-black text-black">
-                  {totalItems}
-                </span>
+          <div className="max-w-[850px] mx-auto flex items-center justify-between gap-3">
+            <div>
+              <div className="text-xs font-semibold text-[#666]">
+                {totalItems} item{totalItems > 1 ? "s" : ""} added
               </div>
-              <div className="text-left">
-                <p className="text-xs font-semibold text-gray-300">
-                  {totalItems} item{totalItems > 1 ? "s" : ""} in cart
-                </p>
-                <p className="text-sm font-black text-white">
-                  ₹{totalPrice.toFixed(2)}
-                </p>
+              <div className="text-[17px] font-black text-[#211512] mt-0.5">
+                ₹{totalPrice.toFixed(2)}
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 text-sm font-bold text-amber-400">
-              <span>View Cart</span>
-              <FiArrowRight className="h-4 w-4" />
-            </div>
-          </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (!isLoggedIn) {
+                  openLoginModal();
+                  return;
+                }
+                openCart();
+              }}
+              className="bg-[#ed101c] text-white border-0 rounded-[9px] px-5 py-3 font-extrabold text-[13px] tracking-wide shadow-md hover:bg-red-700 active:scale-98 transition cursor-pointer"
+            >
+              VIEW CART →
+            </button>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

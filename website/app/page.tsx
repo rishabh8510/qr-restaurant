@@ -6,6 +6,7 @@ import DishOfTheDay from "@/components/DishOfTheDay";
 import Menu from "@/components/Menu";
 import { fetchPublicSettings, WebsiteSettings } from "@/lib/api";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 
 const DEFAULT_WEB: WebsiteSettings = {
   showBanner: true,
@@ -28,6 +29,7 @@ export default function Home() {
   const [website, setWebsite] = useState<WebsiteSettings>(DEFAULT_WEB);
   const [ready, setReady] = useState(false);
   const { tableNumber, setTableNumber } = useCart();
+  const { isLoggedIn, openLoginModal } = useAuth();
 
   useEffect(() => {
     let cancelled = false;
@@ -72,6 +74,10 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => {
+                  if (!isLoggedIn) {
+                    openLoginModal();
+                    return;
+                  }
                   const t = prompt("Dining in? Enter your Table Number:");
                   if (t) setTableNumber(t.trim());
                 }}
