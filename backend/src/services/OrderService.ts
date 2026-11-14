@@ -409,7 +409,7 @@ export interface CreateOrderInput {
   customerName?: string | null;
   customerPhone?: string | null;
   customerEmail?: string | null;
-  orderType: 'delivery' | 'dining' | 'pickup';
+  orderType: 'delivery' | 'dining' | 'pickup' | 'drive_in' | 'drive-in';
   paymentMethod: 'cash' | 'card' | 'upi' | 'online';
   notes?: string | null;
   items: OrderItemSnapshot[];
@@ -430,7 +430,7 @@ export class OrderService {
   async computePricing(input: {
     items: OrderItemSnapshot[];
     userId?: string | null;
-    orderType?: 'delivery' | 'dining' | 'pickup';
+    orderType?: 'delivery' | 'dining' | 'pickup' | 'drive_in' | 'drive-in';
   }) {
     const subtotal = input.items.reduce((sum, i) => sum + Number(i.price) * i.quantity, 0);
     const roundedSubtotal = Math.round(subtotal * 100) / 100;

@@ -5,7 +5,7 @@ export interface CreateOrderInput {
     customerName?: string | null;
     customerPhone?: string | null;
     customerEmail?: string | null;
-    orderType: 'delivery' | 'dining' | 'pickup';
+    orderType: 'delivery' | 'dining' | 'pickup' | 'drive_in' | 'drive-in';
     paymentMethod: 'cash' | 'card' | 'upi' | 'online';
     notes?: string | null;
     items: OrderItemSnapshot[];
@@ -18,7 +18,7 @@ export declare class OrderService {
     computePricing(input: {
         items: OrderItemSnapshot[];
         userId?: string | null;
-        orderType?: 'delivery' | 'dining' | 'pickup';
+        orderType?: 'delivery' | 'dining' | 'pickup' | 'drive_in' | 'drive-in';
     }): Promise<{
         subtotal: number;
         discount: number;

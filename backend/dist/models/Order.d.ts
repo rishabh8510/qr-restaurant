@@ -1,5 +1,5 @@
 import { Model, Optional } from 'sequelize';
-export type OrderType = 'delivery' | 'dining' | 'pickup';
+export type OrderType = 'delivery' | 'dining' | 'pickup' | 'drive_in' | 'drive-in';
 export type PaymentMethod = 'cash' | 'card' | 'upi' | 'online';
 export type PaymentStatus = 'pending' | 'paid' | 'failed';
 export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'ready' | 'completed' | 'cancelled';

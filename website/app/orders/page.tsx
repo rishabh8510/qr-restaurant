@@ -160,19 +160,19 @@ export default function OrdersPage() {
   }
 
   return (
-    <section className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
+    <section className="mx-auto max-w-4xl px-3 py-4 sm:px-6 sm:py-12">
       <Link
         href="/"
-        className="mb-6 inline-flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-gray-900 transition"
+        className="mb-4 sm:mb-6 inline-flex items-center gap-1.5 sm:gap-2 text-xs font-bold text-gray-500 hover:text-gray-900 transition"
       >
-        <FiArrowLeft className="h-4 w-4" />
+        <FiArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         <span>Back to Menu</span>
       </Link>
 
-      <div className="flex items-center justify-between border-b border-gray-100 pb-5">
+      <div className="flex items-center justify-between border-b border-gray-100 pb-3 sm:pb-5">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-gray-900">My Orders</h1>
-          <p className="mt-0.5 text-xs font-semibold text-gray-500">
+          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-gray-900">My Orders</h1>
+          <p className="mt-0.5 text-[11px] sm:text-xs font-semibold text-gray-500">
             {orders.length} order{orders.length !== 1 ? "s" : ""} · Live status tracking
           </p>
         </div>
@@ -181,25 +181,25 @@ export default function OrdersPage() {
           size="sm"
           onClick={onRefresh}
           disabled={refreshing}
-          className="gap-2 text-xs font-bold"
+          className="gap-1.5 text-xs font-bold py-1 px-2.5 sm:py-2 sm:px-3"
         >
-          <FiRefreshCw className={`h-3.5 w-3.5 ${refreshing ? "animate-spin" : ""}`} />
+          <FiRefreshCw className={`h-3 w-3 sm:h-3.5 sm:w-3.5 ${refreshing ? "animate-spin" : ""}`} />
           <span>Refresh</span>
         </Button>
       </div>
 
-      <div className="mt-6 space-y-6">
+      <div className="mt-4 sm:mt-6 space-y-4 sm:space-y-6">
         {orders.length === 0 ? (
-          <Card className="border-dashed p-12 text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-50 text-gray-400">
-              <FiPackage size={24} />
+          <Card className="border-dashed p-8 sm:p-12 text-center">
+            <div className="mx-auto flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-gray-50 text-gray-400">
+              <FiPackage size={20} />
             </div>
-            <h3 className="mt-4 text-base font-bold text-gray-900">No active orders</h3>
-            <p className="mt-1 text-xs text-gray-500">
+            <h3 className="mt-3 text-sm sm:text-base font-bold text-gray-900">No active orders</h3>
+            <p className="mt-1 text-[11px] sm:text-xs text-gray-500">
               You haven&apos;t placed any orders yet. Check out our menu to order!
             </p>
-            <Link href="/" className="mt-5 inline-block">
-              <Button variant="primary" size="sm">
+            <Link href="/" className="mt-4 sm:mt-5 inline-block">
+              <Button variant="primary" size="sm" className="text-xs">
                 Explore Menu
               </Button>
             </Link>
@@ -210,19 +210,21 @@ export default function OrdersPage() {
             const meta = getStatusInfo(st);
 
             return (
-              <Card key={o.id} className="overflow-hidden border-gray-100 bg-white shadow-xs">
+              <Card key={o.id} className="overflow-hidden border-gray-100 bg-white shadow-xs rounded-xl sm:rounded-2xl">
                 {/* Header */}
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 bg-gray-50/60 p-4 sm:px-6">
+                <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 border-b border-gray-100 bg-gray-50/60 p-3 sm:px-6">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-base font-black text-gray-900">{o.orderNumber}</span>
+                      <span className="text-sm sm:text-base font-black text-gray-900">{o.orderNumber}</span>
                       {o.tableNumber && (
-                        <span className="rounded-md bg-amber-100 px-2 py-0.5 text-[11px] font-black text-amber-900">
-                          Table #{o.tableNumber}
+                        <span className="rounded-md bg-amber-100 px-2 py-0.5 text-[10px] sm:text-[11px] font-black text-amber-900">
+                          {String(o.orderType || '').toLowerCase().includes('drive')
+                            ? `🚗 Car #${o.tableNumber}`
+                            : `📍 Table #${o.tableNumber}`}
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 flex items-center gap-2 text-xs text-gray-500">
+                    <p className="mt-1 flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-gray-500 flex-wrap">
                       <span>{new Date(o.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "short" })}</span>
                       <span>•</span>
                       <span className="capitalize font-semibold">{o.orderType || "Dine-in"}</span>
@@ -231,14 +233,14 @@ export default function OrdersPage() {
                     </p>
                   </div>
 
-                  <Badge variant={meta.badgeVariant} className="px-3 py-1 text-xs font-bold">
+                  <Badge variant={meta.badgeVariant} className="px-2.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-bold">
                     {meta.label}
                   </Badge>
                 </div>
 
-                <CardContent className="p-4 sm:p-6">
+                <CardContent className="p-3 sm:p-6">
                   {/* Status hint box */}
-                  <div className={`rounded-xl p-3 text-xs font-bold flex items-center gap-2 ${
+                  <div className={`rounded-lg sm:rounded-xl p-2.5 sm:p-3 text-[11px] sm:text-xs font-bold flex items-center gap-2 ${
                     st === "completed"
                       ? "bg-emerald-50 text-emerald-800 border border-emerald-100"
                       : st === "cancelled"
@@ -249,11 +251,11 @@ export default function OrdersPage() {
                   </div>
 
                   {/* Items list */}
-                  <div className="mt-6 border-t border-gray-100 pt-4">
-                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                  <div className="mt-4 sm:mt-6 border-t border-gray-100 pt-3 sm:pt-4">
+                    <h4 className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-gray-400">
                       Items Ordered ({o.items?.length || 0})
                     </h4>
-                    <ul className="mt-3 space-y-2 text-sm">
+                    <ul className="mt-2 sm:mt-3 space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
                       {(o.items || []).map((it, idx) => (
                         <li key={idx} className="flex justify-between items-center text-gray-800">
                           <span className="font-semibold">
@@ -268,7 +270,7 @@ export default function OrdersPage() {
                   </div>
 
                   {/* Total Amount Only */}
-                  <div className="mt-4 border-t border-gray-100 pt-3 flex justify-between text-base font-black text-gray-900">
+                  <div className="mt-3 sm:mt-4 border-t border-gray-100 pt-2.5 sm:pt-3 flex justify-between text-sm sm:text-base font-black text-gray-900">
                     <span>Total Amount</span>
                     <span className="text-amber-600 tabular-nums">₹{Number(o.total || 0).toFixed(2)}</span>
                   </div>

@@ -79,42 +79,33 @@ export default function CartSheet() {
             {cartItems.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white p-3 shadow-2xs transition-shadow hover:shadow-xs"
+                className="flex items-center gap-2.5 sm:gap-3 rounded-xl sm:rounded-2xl border border-gray-100 bg-white p-2.5 sm:p-3 shadow-2xs transition-shadow hover:shadow-xs"
               >
-                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-gray-50">
-                  <Image
-                    src={item.image as string}
-                    alt={item.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-
                 <div className="min-w-0 flex-1">
-                  <h4 className="truncate text-sm font-bold text-gray-900">
+                  <h4 className="truncate text-xs sm:text-sm font-bold text-gray-900">
                     {item.name}
                   </h4>
-                  <p className="text-xs font-semibold text-gray-600">
+                  <p className="text-[11px] sm:text-xs font-semibold text-gray-600 mt-0.5">
                     ₹{Number(item.price).toFixed(2)}
                   </p>
                 </div>
 
-                <div className="flex items-center gap-1.5">
-                  <div className="flex items-center rounded-xl border border-gray-200 bg-gray-50 p-0.5">
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <div className="flex items-center rounded-lg sm:rounded-xl border border-gray-200 bg-gray-50 p-0.5">
                     <button
                       type="button"
                       onClick={() => decreaseQty(item.id)}
-                      className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-600 transition hover:bg-white active:scale-95"
+                      className="flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-md text-gray-600 transition hover:bg-white active:scale-95"
                     >
                       <FiMinus className="h-3 w-3" />
                     </button>
-                    <span className="w-6 text-center text-xs font-bold tabular-nums text-gray-900">
+                    <span className="w-5 sm:w-6 text-center text-xs font-bold tabular-nums text-gray-900">
                       {item.quantity}
                     </span>
                     <button
                       type="button"
                       onClick={() => increaseQty(item.id)}
-                      className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-600 transition hover:bg-white active:scale-95"
+                      className="flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-md text-gray-600 transition hover:bg-white active:scale-95"
                     >
                       <FiPlus className="h-3 w-3" />
                     </button>
@@ -123,9 +114,9 @@ export default function CartSheet() {
                   <button
                     type="button"
                     onClick={() => removeFromCart(item.id)}
-                    className="rounded-lg p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
+                    className="rounded-lg p-1 sm:p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-600 cursor-pointer"
                   >
-                    <FiTrash2 className="h-4 w-4" />
+                    <FiTrash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </button>
                 </div>
               </div>
@@ -133,19 +124,27 @@ export default function CartSheet() {
           </div>
 
           {/* Footer Checkout Summary */}
-          <div className="sticky bottom-0 -mx-6 -mb-4 border-t border-gray-100 bg-white px-6 py-4 shadow-lg">
-            <div className="space-y-1.5 text-sm">
-              <div className="flex justify-between text-base font-bold text-gray-900">
+          <div className="sticky bottom-0 -mx-4 sm:-mx-6 -mb-3 sm:-mb-4 border-t border-gray-100 bg-white px-4 sm:px-6 py-3 sm:py-4 shadow-lg">
+            <div className="space-y-1 text-xs sm:text-sm">
+              <div className="flex justify-between text-sm sm:text-base font-bold text-gray-900">
                 <span>Total Amount</span>
-                <span className="text-amber-600">₹{totalPrice.toFixed(2)}</span>
+                <span className="text-amber-600 font-black">₹{totalPrice.toFixed(2)}</span>
               </div>
             </div>
 
-            <button type="button" onClick={handleCheckoutClick} className="mt-4 block w-full">
-              <Button variant="primary" className="w-full gap-2 text-base font-bold">
-                <span>Proceed to Checkout</span>
+            <button type="button" onClick={handleCheckoutClick} className="mt-3 sm:mt-4 block w-full cursor-pointer">
+              <Button variant="primary" className="w-full gap-2 text-sm sm:text-base font-bold py-2.5 sm:py-3">
+                <span>Make Order</span>
                 <FiArrowRight className="h-4 w-4" />
               </Button>
+            </button>
+
+            <button
+              type="button"
+              onClick={closeCart}
+              className="mt-2 flex w-full items-center justify-center rounded-xl border border-gray-200 bg-white py-2 text-xs font-bold text-gray-700 shadow-2xs transition hover:bg-gray-50 active:scale-98 cursor-pointer"
+            >
+              + Add more items
             </button>
           </div>
         </div>

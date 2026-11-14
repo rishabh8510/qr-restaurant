@@ -143,7 +143,11 @@ export function ThermalPrintModal({
                 {/* Table & Order Highlight */}
                 <div className="border-b border-dashed border-black pb-2 text-center">
                   <p className="text-xl font-black tracking-tight">
-                    {order.tableNumber ? `TABLE #${order.tableNumber}` : 'TAKEAWAY / PICKUP'}
+                    {order.tableNumber
+                      ? String(order.orderType || '').toLowerCase().includes('drive')
+                        ? `CAR #${order.tableNumber}`
+                        : `TABLE #${order.tableNumber}`
+                      : 'TAKEAWAY / PICKUP'}
                   </p>
                   <p className="text-xs font-bold">Order: {order.orderNumber}</p>
                   <p className="text-[10px] text-gray-600">Time: {formatDateTime(order.createdAt)}</p>
@@ -192,7 +196,14 @@ export function ThermalPrintModal({
                 <div className="border-b border-dashed border-black pb-2 text-[11px]">
                   <p><span className="font-bold">Bill No:</span> {order.orderNumber}</p>
                   {order.tableNumber && (
-                    <p><span className="font-bold">Table:</span> #{order.tableNumber}</p>
+                    <p>
+                      <span className="font-bold">
+                        {String(order.orderType || '').toLowerCase().includes('drive')
+                          ? 'Car:'
+                          : 'Table:'}
+                      </span>{' '}
+                      #{order.tableNumber}
+                    </p>
                   )}
                   <p><span className="font-bold">Customer:</span> {order.customerName || 'Guest'}</p>
                   {order.customerPhone && (

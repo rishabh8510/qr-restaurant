@@ -62,11 +62,11 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full glass-header border-b border-stone-200/60 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.03)] transition-all">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-14 sm:h-16 max-w-7xl items-center justify-between px-3 sm:px-6">
         {/* Brand identity */}
-        <div className="flex items-center gap-3 sm:gap-6">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full overflow-hidden shadow-md ring-2 ring-red-100 transition-transform group-hover:scale-105">
+        <div className="flex items-center gap-2 sm:gap-6">
+          <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group">
+            <div className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-full overflow-hidden shadow-sm ring-2 ring-red-100 transition-transform group-hover:scale-105">
               <img
                 src="/logo.jpeg"
                 alt="Lotus Hut"
@@ -74,10 +74,10 @@ export default function Header() {
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-base font-black tracking-tight text-stone-900 leading-none">
+              <span className="text-sm sm:text-base font-black tracking-tight text-stone-900 leading-none">
                 LOTUS HUT
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-red-600 leading-none mt-1">
+              <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-red-600 leading-none mt-0.5 sm:mt-1">
                 Cafe &amp; Bistro
               </span>
             </div>
@@ -117,7 +117,7 @@ export default function Header() {
         </div>
 
         {/* Right tools: Table pill + Cart + Profile */}
-        <div className="flex items-center gap-2.5 sm:gap-3.5">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           {/* Table Pill */}
           {tableNumber ? (
             <button
@@ -130,11 +130,11 @@ export default function Header() {
                 const next = prompt("Enter your Table Number:", tableNumber);
                 if (next !== null) setTableNumber(next.trim() || null);
               }}
-              className="flex items-center gap-2 rounded-2xl border border-amber-300 bg-amber-50/90 px-3.5 py-2 text-xs font-black text-amber-950 shadow-xs transition hover:bg-amber-100 active:scale-98"
+              className="flex items-center gap-1.5 rounded-xl sm:rounded-2xl border border-amber-300 bg-amber-50/90 px-2.5 py-1.5 sm:px-3.5 sm:py-2 text-[11px] sm:text-xs font-black text-amber-950 shadow-xs transition hover:bg-amber-100 active:scale-98"
               title="Click to change your table"
             >
-              <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
-              <span>Table #{tableNumber}</span>
+              <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-amber-500 animate-pulse" />
+              <span>T#{tableNumber}</span>
             </button>
           ) : (
             <button
@@ -147,10 +147,10 @@ export default function Header() {
                 const next = prompt("Dining in? Enter your Table Number:");
                 if (next) setTableNumber(next.trim());
               }}
-              className="flex items-center gap-1.5 rounded-2xl border border-stone-200 bg-white px-3 py-2 text-xs font-bold text-stone-700 shadow-2xs hover:bg-stone-50 transition active:scale-98"
+              className="flex items-center gap-1 sm:gap-1.5 rounded-xl sm:rounded-2xl border border-stone-200 bg-white px-2.5 py-1.5 sm:px-3 sm:py-2 text-[11px] sm:text-xs font-bold text-stone-700 shadow-2xs hover:bg-stone-50 transition active:scale-98"
             >
-              <span className="text-amber-600">📍</span>
-              <span>Select Table</span>
+              <span className="text-amber-600 text-xs">📍</span>
+              <span className="hidden xs:inline">Table</span>
             </button>
           )}
 
@@ -164,15 +164,15 @@ export default function Header() {
               }
               openCart();
             }}
-            className="relative flex h-10 items-center gap-2 rounded-2xl bg-stone-900 px-3.5 sm:px-4 text-white shadow-md shadow-stone-900/10 transition-all hover:bg-black active:scale-98 cursor-pointer"
+            className="relative flex h-9 sm:h-10 items-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl bg-stone-900 px-3 sm:px-4 text-white shadow-md shadow-stone-900/10 transition-all hover:bg-black active:scale-98 cursor-pointer"
             aria-label="View Cart"
           >
-            <FiShoppingBag className="h-4 w-4 text-amber-400" />
+            <FiShoppingBag className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-400" />
             <span className="hidden sm:inline text-xs font-bold text-amber-300">
               Cart
             </span>
             {totalItems > 0 && (
-              <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-400 px-1.5 text-[11px] font-black text-stone-950">
+              <span className="flex h-4 min-w-[16px] sm:h-5 sm:min-w-[20px] items-center justify-center rounded-full bg-amber-400 px-1 text-[10px] sm:text-[11px] font-black text-stone-950">
                 {totalItems}
               </span>
             )}
@@ -183,10 +183,10 @@ export default function Header() {
             <button
               type="button"
               onClick={handleProfileClick}
-              className="flex h-10 w-10 items-center justify-center rounded-2xl border border-stone-200 bg-white text-stone-700 shadow-2xs hover:bg-stone-50 transition active:scale-98"
+              className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl sm:rounded-2xl border border-stone-200 bg-white text-stone-700 shadow-2xs hover:bg-stone-50 transition active:scale-98 cursor-pointer"
               aria-label="Account"
             >
-              <FiUser className="h-4 w-4" />
+              <FiUser className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </button>
 
             {isLoggedIn && showProfileMenu && (

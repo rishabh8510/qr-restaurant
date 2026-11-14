@@ -77,8 +77,8 @@ export default function HomeBanner() {
   if (banners.length === 0) return null;
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-3 py-1 sm:px-6">
-      <div className="relative overflow-hidden">
+    <section className="mx-auto w-full max-w-7xl px-2.5 py-1 sm:px-6">
+      <div className="relative overflow-hidden rounded-xl">
         <div
           className="flex gap-1 transition-transform duration-700 ease-in-out"
           style={{
@@ -96,7 +96,7 @@ export default function HomeBanner() {
                 alt={`Banner ${index + 1}`}
                 width={400}
                 height={400}
-                className="h-[160px] w-full rounded-lg object-cover sm:h-[200px] md:h-[240px] lg:h-[280px]"
+                className="h-[120px] xs:h-[140px] w-full rounded-xl object-cover sm:h-[200px] md:h-[240px] lg:h-[280px]"
                 priority={index < VISIBLE}
               />
             </div>
@@ -105,25 +105,27 @@ export default function HomeBanner() {
 
         <button
           onClick={goPrev}
-          className="absolute left-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-gray-800 shadow-md transition hover:bg-white sm:left-2 sm:h-10 sm:w-10"
+          className="absolute left-1 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-800 shadow-sm transition hover:bg-white sm:left-2 sm:h-9 sm:w-9"
+          aria-label="Previous banner"
         >
-          <FiChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+          <FiChevronLeft className="h-3.5 w-3.5 sm:h-5 sm:w-5" />
         </button>
         <button
           onClick={goNext}
-          className="absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-gray-800 shadow-md transition hover:bg-white sm:right-2 sm:h-10 sm:w-10"
+          className="absolute right-1 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-800 shadow-sm transition hover:bg-white sm:right-2 sm:h-9 sm:w-9"
+          aria-label="Next banner"
         >
-          <FiChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
+          <FiChevronRight className="h-3.5 w-3.5 sm:h-5 sm:w-5" />
         </button>
       </div>
 
-      <div className="mt-4 flex justify-center gap-2">
+      <div className="mt-2 sm:mt-3 flex justify-center gap-1.5 sm:gap-2">
         {banners.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrent(index)}
-            className={`h-2 rounded-full transition-all ${
-              current === index ? "w-6 bg-orange-500" : "w-2 bg-gray-300"
+            className={`h-1.5 sm:h-2 rounded-full transition-all cursor-pointer ${
+              current === index ? "w-5 sm:w-6 bg-[#ed101c]" : "w-1.5 sm:w-2 bg-gray-300"
             }`}
           />
         ))}

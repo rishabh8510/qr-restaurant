@@ -303,7 +303,7 @@ const createOrderSchema = zod_1.z.object({
     customerName: zod_1.z.string().max(150).optional().nullable(),
     customerPhone: zod_1.z.string().max(30).optional().nullable(),
     customerEmail: zod_1.z.string().email().optional().nullable().or(zod_1.z.literal('')),
-    orderType: zod_1.z.enum(['delivery', 'dining', 'pickup']),
+    orderType: zod_1.z.enum(['delivery', 'dining', 'pickup', 'drive_in', 'drive-in']),
     paymentMethod: zod_1.z.enum(['cash', 'card', 'upi', 'online']),
     notes: zod_1.z.string().max(1000).optional().nullable(),
     items: zod_1.z
@@ -429,7 +429,7 @@ exports.likeProduct = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
 });
 exports.quoteOrder = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const schema = zod_1.z.object({
-        orderType: zod_1.z.enum(['delivery', 'dining', 'pickup']).optional(),
+        orderType: zod_1.z.enum(['delivery', 'dining', 'pickup', 'drive_in', 'drive-in']).optional(),
         items: zod_1.z
             .array(zod_1.z.object({
             productId: zod_1.z.string(),

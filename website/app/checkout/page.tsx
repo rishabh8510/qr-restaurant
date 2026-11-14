@@ -4,24 +4,22 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   FiArrowLeft,
-  FiHome,
-  FiCheckCircle,
   FiLock,
 } from "react-icons/fi";
 import { useCart } from "@/context/CartContext";
 import { placeOrder, quoteOrder, OrderQuote } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 
-type OrderType = "dining" | "pickup";
+type OrderType = "drive_in" | "dining" | "pickup";
 
 const ORDER_TYPES: {
   value: OrderType;
   label: string;
   desc: string;
-  icon: typeof FiHome;
 }[] = [
-  { value: "dining", label: "Dine-in", desc: "Eat at restaurant", icon: FiHome },
-  { value: "pickup", label: "Takeaway", desc: "Collect & take away", icon: FiCheckCircle },
+  { value: "drive_in", label: "Drive-in", desc: "In car" },
+  { value: "dining", label: "Dine-in", desc: "At table" },
+  { value: "pickup", label: "Takeaway", desc: "Take away" },
 ];
 
 function BillSummary({
@@ -61,8 +59,9 @@ export default function CheckoutPage() {
   const { isLoggedIn, token, openLoginModal, user } = useAuth();
 
   const [isDone, setIsDone] = useState(false);
-  const [orderType, setOrderType] = useState<OrderType>(() => (tableNumber ? "dining" : "dining"));
+  const [orderType, setOrderType] = useState<OrderType>(() => (tableNumber ? "dining" : "drive_in"));
   const [currentTable, setCurrentTable] = useState<string>(() => tableNumber || "");
+  const [carNumber, setCarNumber] = useState<string>("");
 
   const [name, setName] = useState<string>(() => user?.name ?? "");
   const [phone, setPhone] = useState<string>(() => user?.phone ?? "");
@@ -149,7 +148,7 @@ export default function CheckoutPage() {
           Login Required to Checkout
         </h2>
         <p className="mx-auto mt-2 max-w-xs text-xs text-gray-500">
-          Please sign in with your mobile number to choose your table and place your order.
+          Please sign in with your mobile number to choose your table/car and place your order.
         </p>
         <button
           type="button"
@@ -181,6 +180,10 @@ export default function CheckoutPage() {
       setError("Please enter or scan your Table Number");
       return;
     }
+    if (orderType === "drive_in" && !carNumber.trim()) {
+      setError("Please enter your Car Number / vehicle details");
+      return;
+    }
     if (!name.trim()) {
       setError("Please enter your name");
       return;
@@ -188,14 +191,26 @@ export default function CheckoutPage() {
     setError("");
     setLoading(true);
     try {
+      const orderNotes = [
+        orderType === "drive_in" ? `[Drive-in: Car ${carNumber.trim()}]` : null,
+        notes.trim() || null,
+      ]
+        .filter(Boolean)
+        .join("\n");
+
       const order = await placeOrder(
         {
-          tableNumber: orderType === "dining" ? currentTable.trim() : undefined,
+          tableNumber:
+            orderType === "dining"
+              ? currentTable.trim()
+              : orderType === "drive_in"
+              ? carNumber.trim()
+              : undefined,
           customerName: name.trim() || undefined,
           customerPhone: phone.trim() || undefined,
           orderType,
           paymentMethod: "cash",
-          notes: notes || undefined,
+          notes: orderNotes || undefined,
           items: cartItems.map((i) => ({
             productId: String(i.id),
             name: i.name,
@@ -219,59 +234,77 @@ export default function CheckoutPage() {
   const displayTotal = quote ? quote.total : totalPrice;
 
   return (
-    <section className="mx-auto w-full max-w-lg px-4 py-6 sm:px-6 sm:py-10">
+    <section className="mx-auto w-full max-w-lg px-3 py-4 sm:px-6 sm:py-10">
       <Link
         href="/cart"
-        className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900"
+        className="mb-4 sm:mb-6 inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium text-gray-600 hover:text-gray-900"
       >
-        <FiArrowLeft className="h-4 w-4" />
+        <FiArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         Back to cart
       </Link>
 
       {!isDone ? (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div>
-            <h1 className="text-2xl font-black tracking-tight text-gray-900">
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-gray-900">
               Checkout
             </h1>
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-0.5 sm:mt-1 text-[11px] sm:text-xs text-gray-500">
               Confirm your details and place your order directly
             </p>
           </div>
 
-          {/* Order Type Selection: Dine-in or Takeaway */}
+          {/* Order Type Selection: Drive-in, Dine-in or Takeaway */}
           <div>
-            <p className="mb-3 text-sm font-bold text-gray-800">Choose order type</p>
-            <div className="grid grid-cols-2 gap-3">
-              {ORDER_TYPES.map(({ value, label, desc, icon: Icon }) => (
+            <p className="mb-2 text-xs sm:text-sm font-bold text-gray-800">Choose order type</p>
+            <div className="grid grid-cols-3 gap-2">
+              {ORDER_TYPES.map(({ value, label, desc }) => (
                 <button
                   key={value}
                   type="button"
                   onClick={() => setOrderType(value)}
-                  className={`flex flex-col items-center rounded-2xl border-2 p-4 text-center transition cursor-pointer ${
+                  className={`flex flex-col items-center justify-center rounded-xl border py-2 px-2 text-center transition cursor-pointer ${
                     orderType === value
-                      ? "border-amber-400 bg-amber-50 shadow-sm"
-                      : "border-gray-200 bg-white hover:border-amber-200"
+                      ? "border-amber-400 bg-amber-50 shadow-xs ring-1 ring-amber-400"
+                      : "border-gray-200 bg-white hover:border-gray-300"
                   }`}
                 >
-                  <Icon
-                    className={`h-6 w-6 ${
-                      orderType === value ? "text-amber-600" : "text-gray-500"
-                    }`}
-                  />
-                  <span className="mt-2 block text-sm font-bold text-gray-900">
+                  <span className="text-xs sm:text-[13px] font-bold text-gray-900 leading-tight">
                     {label}
                   </span>
-                  <span className="mt-0.5 block text-xs text-gray-500">{desc}</span>
+                  <span className="text-[10px] text-gray-500 leading-tight mt-0.5">
+                    {desc}
+                  </span>
                 </button>
               ))}
             </div>
           </div>
 
+          {/* Car number input for Drive-in */}
+          {orderType === "drive_in" && (
+            <div className="rounded-xl sm:rounded-2xl border border-amber-200 bg-amber-50/50 p-3 sm:p-4">
+              <label className="mb-1 block text-[11px] sm:text-xs font-bold uppercase tracking-wider text-amber-900">
+                Car Number / Vehicle Details <span className="text-red-500">*</span>
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="e.g. MP09 AB 1234, White Swift"
+                  value={carNumber}
+                  onChange={(e) => setCarNumber(e.target.value)}
+                  className="w-full rounded-lg sm:rounded-xl border border-amber-300 bg-white px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-amber-200"
+                />
+              </div>
+              <p className="mt-1 text-[10px] sm:text-[11px] text-amber-800">
+                Enter your vehicle number so our staff can bring the order to your car
+              </p>
+            </div>
+          )}
+
           {/* Table number for Dine-in */}
           {orderType === "dining" && (
-            <div className="rounded-2xl border border-amber-200 bg-amber-50/50 p-4">
-              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-amber-900">
+            <div className="rounded-xl sm:rounded-2xl border border-amber-200 bg-amber-50/50 p-3 sm:p-4">
+              <label className="mb-1 block text-[11px] sm:text-xs font-bold uppercase tracking-wider text-amber-900">
                 Table Number <span className="text-red-500">*</span>
               </label>
               <div className="flex gap-2">
@@ -283,41 +316,41 @@ export default function CheckoutPage() {
                     setCurrentTable(e.target.value);
                     setTableNumber(e.target.value);
                   }}
-                  className="flex-1 rounded-xl border border-amber-300 bg-white px-4 py-2.5 text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-amber-200"
+                  className="flex-1 rounded-lg sm:rounded-xl border border-amber-300 bg-white px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-amber-200"
                 />
               </div>
-              <p className="mt-1.5 text-[11px] text-amber-800">
+              <p className="mt-1 text-[10px] sm:text-[11px] text-amber-800">
                 Found on the acrylic standee at your dining table
               </p>
             </div>
           )}
 
           {error && (
-            <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>
+            <p className="rounded-xl bg-red-50 px-3.5 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm text-red-600">{error}</p>
           )}
 
-          <div className="space-y-4">
-            <p className="text-sm font-bold text-gray-800">Customer details</p>
+          <div className="space-y-3 sm:space-y-4">
+            <p className="text-xs sm:text-sm font-bold text-gray-800">Customer details</p>
             <input
               type="text"
               placeholder="Your name *"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm outline-none focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-100"
+              className="w-full rounded-lg sm:rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm outline-none focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-100"
             />
             <input
               type="tel"
               placeholder="Phone number"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm outline-none focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-100"
+              className="w-full rounded-lg sm:rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm outline-none focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-100"
             />
             <textarea
               placeholder="Cooking instructions / special requests (optional)"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm outline-none focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-100"
+              className="w-full resize-none rounded-lg sm:rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm outline-none focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-100"
             />
           </div>
 
@@ -327,28 +360,28 @@ export default function CheckoutPage() {
             type="button"
             disabled={loading}
             onClick={handlePlaceOrder}
-            className="w-full rounded-xl bg-amber-400 py-3.5 text-sm font-bold text-black shadow-sm transition hover:bg-amber-500 disabled:opacity-60 cursor-pointer"
+            className="w-full rounded-xl bg-amber-400 py-3 sm:py-3.5 text-xs sm:text-sm font-bold text-black shadow-sm transition hover:bg-amber-500 disabled:opacity-60 cursor-pointer"
           >
-            {loading ? "Placing order…" : `Place Order · ₹${displayTotal}`}
+            {loading ? "Placing order…" : `Make Order · ₹${displayTotal}`}
           </button>
         </div>
       ) : (
-        <div className="mt-12 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-3xl">
+        <div className="mt-8 sm:mt-12 text-center">
+          <div className="mx-auto mb-3 sm:mb-4 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-green-100 text-2xl sm:text-3xl">
             ✓
           </div>
-          <p className="text-2xl font-black text-green-600">Order placed!</p>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="text-xl sm:text-2xl font-black text-green-600">Order placed!</p>
+          <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-gray-600">
             Order number:{" "}
             <span className="font-semibold text-gray-900">{orderNumber}</span>
           </p>
           <Link
             href="/orders"
-            className="mt-8 inline-block rounded-xl bg-amber-400 px-8 py-3 text-sm font-bold text-black hover:bg-amber-500"
+            className="mt-6 sm:mt-8 inline-block rounded-xl bg-amber-400 px-6 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-sm font-bold text-black hover:bg-amber-500"
           >
             View my orders
           </Link>
-          <Link href="/" className="mt-3 block text-sm text-gray-500 underline">
+          <Link href="/" className="mt-3 block text-xs sm:text-sm text-gray-500 underline">
             Back to menu
           </Link>
         </div>

@@ -30,11 +30,11 @@ function formatTime(iso?: string) {
 
 function getServiceLabel(order: Order) {
   const type = String(order.orderType || '').toLowerCase();
+  if (type === 'drive-in' || type === 'drive_in') {
+    return `DRIVE-IN · ${order.tableNumber || 'CAR NOT GIVEN'}`;
+  }
   if (order.tableNumber || type === 'dine-in' || type === 'dining') {
     return `TABLE ${order.tableNumber || '—'}`;
-  }
-  if (type === 'drive-in') {
-    return `DRIVE-IN · ${order.customerPhone || 'CAR'}`;
   }
   return 'TAKEAWAY';
 }

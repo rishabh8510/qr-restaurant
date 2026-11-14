@@ -59,26 +59,26 @@ export function Sheet({
             )}
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
+            <div className="flex items-center justify-between border-b border-gray-100 px-4 sm:px-6 py-3 sm:py-4">
               <div>
                 {title && (
-                  <h2 className="text-lg font-bold text-gray-900">{title}</h2>
+                  <h2 className="text-base sm:text-lg font-bold text-gray-900">{title}</h2>
                 )}
                 {description && (
-                  <p className="text-xs text-gray-500">{description}</p>
+                  <p className="text-[11px] sm:text-xs text-gray-500">{description}</p>
                 )}
               </div>
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-full p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 focus:outline-none"
+                className="rounded-full p-1.5 sm:p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 focus:outline-none cursor-pointer"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4 sm:h-5 sm:w-5" />
               </button>
             </div>
 
             {/* Body */}
-            <div className="flex-1 overflow-y-auto px-6 py-4">{children}</div>
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-3 sm:py-4">{children}</div>
           </motion.div>
         </div>
       )}

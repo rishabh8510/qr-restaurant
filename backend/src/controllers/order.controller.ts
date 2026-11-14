@@ -93,7 +93,7 @@ const createOrderSchema = z.object({
   customerName: z.string().max(150).optional().nullable(),
   customerPhone: z.string().max(30).optional().nullable(),
   customerEmail: z.string().email().optional().nullable().or(z.literal('')),
-  orderType: z.enum(['delivery', 'dining', 'pickup']),
+  orderType: z.enum(['delivery', 'dining', 'pickup', 'drive_in', 'drive-in']),
   paymentMethod: z.enum(['cash', 'card', 'upi', 'online']),
   notes: z.string().max(1000).optional().nullable(),
   items: z

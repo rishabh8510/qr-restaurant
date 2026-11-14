@@ -77,56 +77,56 @@ export default function ProfilePage() {
   const initial = (user.name || user.phone || "U").charAt(0).toUpperCase();
 
   return (
-    <section className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
+    <section className="mx-auto max-w-4xl px-3 py-4 sm:px-6 sm:py-12">
       <Link
         href="/"
-        className="mb-6 inline-flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-gray-900 transition"
+        className="mb-4 sm:mb-6 inline-flex items-center gap-1.5 sm:gap-2 text-xs font-bold text-gray-500 hover:text-gray-900 transition"
       >
-        <FiArrowLeft className="h-4 w-4" />
+        <FiArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         <span>Back to Menu</span>
       </Link>
 
-      <div className="mb-8 border-b border-gray-100 pb-5">
-        <h1 className="text-2xl font-black tracking-tight text-gray-900 sm:text-3xl">
+      <div className="mb-4 sm:mb-8 border-b border-gray-100 pb-3 sm:pb-5">
+        <h1 className="text-xl sm:text-3xl font-black tracking-tight text-gray-900">
           Account &amp; Profile
         </h1>
-        <p className="mt-1 text-xs font-semibold text-gray-500">
+        <p className="mt-0.5 sm:mt-1 text-[11px] sm:text-xs font-semibold text-gray-500">
           Manage your personal details and quick order access
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-12">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-12">
         {/* Left: Avatar & quick links */}
         <div className="lg:col-span-5">
-          <Card className="border-gray-100 bg-white shadow-xs">
-            <CardContent className="flex flex-col items-center p-6 text-center">
-              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-amber-400 text-3xl font-black text-black shadow-md ring-4 ring-amber-100">
+          <Card className="border-gray-100 bg-white shadow-xs rounded-xl sm:rounded-2xl">
+            <CardContent className="flex flex-col items-center p-4 sm:p-6 text-center">
+              <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl bg-amber-400 text-2xl sm:text-3xl font-black text-black shadow-md ring-4 ring-amber-100">
                 {initial}
               </div>
-              <h2 className="mt-4 text-lg font-black text-gray-900">
+              <h2 className="mt-3 sm:mt-4 text-base sm:text-lg font-black text-gray-900">
                 {user.name || "Customer"}
               </h2>
               <div className="mt-1 flex items-center gap-1.5 text-xs font-medium text-gray-500">
                 <FiPhone className="h-3 w-3" />
                 <span>{user.phone || "—"}</span>
               </div>
-              <Badge variant="emerald" className="mt-3 text-[10px] font-bold">
+              <Badge variant="emerald" className="mt-2.5 sm:mt-3 text-[10px] font-bold">
                 ✓ Verified Customer
               </Badge>
 
-              <div className="mt-6 grid w-full grid-cols-2 gap-3 border-t border-gray-100 pt-5">
+              <div className="mt-4 sm:mt-6 grid w-full grid-cols-2 gap-2 sm:gap-3 border-t border-gray-100 pt-4 sm:pt-5">
                 <Link
                   href="/orders"
-                  className="flex flex-col items-center gap-2 rounded-2xl border border-gray-100 bg-gray-50/50 p-4 text-center transition hover:border-gray-200 hover:bg-white hover:shadow-2xs"
+                  className="flex flex-col items-center gap-1.5 rounded-xl border border-gray-100 bg-gray-50/50 p-3 sm:p-4 text-center transition hover:border-gray-200 hover:bg-white hover:shadow-2xs"
                 >
-                  <FiPackage className="h-5 w-5 text-amber-600" />
+                  <FiPackage className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
                   <span className="text-xs font-bold text-gray-900">Orders</span>
                 </Link>
                 <Link
                   href="/"
-                  className="flex flex-col items-center gap-2 rounded-2xl border border-gray-100 bg-gray-50/50 p-4 text-center transition hover:border-gray-200 hover:bg-white hover:shadow-2xs"
+                  className="flex flex-col items-center gap-1.5 rounded-xl border border-gray-100 bg-gray-50/50 p-3 sm:p-4 text-center transition hover:border-gray-200 hover:bg-white hover:shadow-2xs"
                 >
-                  <FiShoppingBag className="h-5 w-5 text-amber-600" />
+                  <FiShoppingBag className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
                   <span className="text-xs font-bold text-gray-900">Menu</span>
                 </Link>
               </div>
@@ -135,26 +135,26 @@ export default function ProfilePage() {
         </div>
 
         {/* Right: Personal details */}
-        <div className="space-y-4 lg:col-span-7">
-          <Card className="border-gray-100 bg-white shadow-xs">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base font-bold">Personal Information</CardTitle>
+        <div className="space-y-3 sm:space-y-4 lg:col-span-7">
+          <Card className="border-gray-100 bg-white shadow-xs rounded-xl sm:rounded-2xl">
+            <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-3">
+              <CardTitle className="text-sm sm:text-base font-bold">Personal Information</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-5">
+            <CardContent className="space-y-3.5 sm:space-y-5 p-4 sm:p-6 pt-0">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <label className="block text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Registered Mobile Number
                 </label>
-                <div className="mt-1.5 rounded-xl border border-gray-100 bg-gray-50 px-4 py-2.5 text-sm font-bold text-gray-800">
+                <div className="mt-1 rounded-lg sm:rounded-xl border border-gray-100 bg-gray-50 px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-bold text-gray-800">
                   {user.phone || "—"}
                 </div>
-                <p className="mt-1 text-[11px] text-gray-400">
+                <p className="mt-1 text-[10px] sm:text-[11px] text-gray-400">
                   Used for OTP verification and receipt SMS.
                 </p>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <label className="block text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Your Full Name
                 </label>
                 <input
@@ -162,20 +162,20 @@ export default function ProfilePage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Alex"
-                  className="mt-1.5 flex h-11 w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm shadow-2xs outline-none transition focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
+                  className="mt-1 flex h-9 sm:h-11 w-full rounded-lg sm:rounded-xl border border-gray-200 bg-white px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm shadow-2xs outline-none transition focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
                 />
               </div>
 
-              <div className="flex items-center gap-3 pt-2">
+              <div className="flex items-center gap-3 pt-1">
                 <Button
                   type="button"
                   variant="primary"
                   onClick={handleSave}
-                  className="gap-2 text-sm font-bold"
+                  className="gap-2 text-xs sm:text-sm font-bold py-2 px-4"
                 >
                   {saved ? (
                     <>
-                      <FiCheckCircle className="h-4 w-4" />
+                      <FiCheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       <span>Saved Successfully</span>
                     </>
                   ) : (
@@ -192,9 +192,9 @@ export default function ProfilePage() {
               logout();
               router.push("/");
             }}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-red-100 bg-white p-3.5 text-xs font-bold text-red-600 shadow-2xs transition hover:bg-red-50 hover:text-red-700"
+            className="flex w-full items-center justify-center gap-2 rounded-xl sm:rounded-2xl border border-red-100 bg-white p-3 sm:p-3.5 text-xs font-bold text-red-600 shadow-2xs transition hover:bg-red-50 hover:text-red-700 cursor-pointer"
           >
-            <FiLogOut className="h-4 w-4" />
+            <FiLogOut className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             <span>Sign Out from this Device</span>
           </button>
         </div>

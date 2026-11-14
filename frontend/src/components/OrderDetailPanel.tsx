@@ -125,7 +125,11 @@ export function OrderDetailPanel({
                 )}
                 {order.tableNumber && (
                   <div className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-amber-100 px-2.5 py-1 text-xs font-black text-amber-900">
-                    <span>📍 Table #{order.tableNumber}</span>
+                    <span>
+                      {String(order.orderType || '').toLowerCase().includes('drive')
+                        ? `🚗 Car #${order.tableNumber}`
+                        : `📍 Table #${order.tableNumber}`}
+                    </span>
                   </div>
                 )}
               </div>

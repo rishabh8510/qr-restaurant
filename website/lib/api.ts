@@ -131,7 +131,7 @@ export type PlaceOrderPayload = {
   customerName?: string;
   customerPhone?: string;
   customerEmail?: string;
-  orderType: 'delivery' | 'dining' | 'pickup';
+  orderType: 'delivery' | 'dining' | 'pickup' | 'drive_in' | 'drive-in';
   paymentMethod: 'cash' | 'card' | 'upi' | 'online';
   notes?: string;
   items: {
@@ -250,7 +250,7 @@ export type OrderQuote = {
 export async function quoteOrder(
   items: PlaceOrderPayload['items'],
   token?: string | null,
-  orderType?: 'delivery' | 'dining' | 'pickup'
+  orderType?: 'delivery' | 'dining' | 'pickup' | 'drive_in' | 'drive-in'
 ): Promise<OrderQuote> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;

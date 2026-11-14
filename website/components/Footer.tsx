@@ -13,26 +13,26 @@ export default function Footer() {
 
   return (
     <footer className="bg-white">
-      <div className="mx-auto max-w-7xl px-6 py-10">
+      <div className="mx-auto max-w-7xl px-3 sm:px-6 py-6 sm:py-10">
         {/* Brand & Description Card */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
+        <div className="rounded-xl sm:rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
+          <div className="flex items-center gap-2.5 sm:gap-3 mb-3 sm:mb-4">
             <img
               src="/logo.jpeg"
               alt="Lotus Hut"
-              className="h-12 w-12 rounded-full object-cover shadow-sm ring-2 ring-red-100"
+              className="h-10 w-10 sm:h-12 sm:w-12 rounded-full object-cover shadow-sm ring-2 ring-red-100"
             />
             <div>
-              <h2 className="text-lg font-black tracking-tight text-gray-900">
+              <h2 className="text-base sm:text-lg font-black tracking-tight text-gray-900 leading-tight">
                 Lotus Hut Cafe &amp; Bistro
               </h2>
-              <p className="text-xs font-semibold text-red-600">
+              <p className="text-[11px] sm:text-xs font-semibold text-red-600 mt-0.5">
                 Fresh Sandwiches · Pizzas · Coffees · Gourmet Shakes
               </p>
             </div>
           </div>
           <p
-            className={`text-sm leading-relaxed text-gray-800 ${
+            className={`text-xs sm:text-sm leading-relaxed text-gray-800 ${
               expanded ? "" : "line-clamp-3"
             }`}
           >
@@ -40,24 +40,24 @@ export default function Footer() {
           </p>
           <button
             onClick={() => setExpanded((v) => !v)}
-            className="mt-2 text-sm font-medium text-blue-600 hover:underline cursor-pointer"
+            className="mt-1.5 sm:mt-2 text-xs sm:text-sm font-medium text-blue-600 hover:underline cursor-pointer"
           >
             {expanded ? "Collapse Text" : "Expand Text"}
           </button>
         </div>
 
         {/* Three info columns */}
-        <div className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-3">
+        <div className="mt-6 sm:mt-10 grid grid-cols-1 gap-6 sm:gap-10 md:grid-cols-3">
           {/* About the venue */}
           <div>
-            <h3 className="mb-4 text-base font-bold text-gray-900">
+            <h3 className="mb-2 sm:mb-4 text-sm sm:text-base font-bold text-gray-900">
               About the venue
             </h3>
-            <div className="flex items-start gap-3">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-400">
-                <FiClock className="h-5 w-5 text-black" />
+            <div className="flex items-start gap-2.5 sm:gap-3">
+              <span className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-amber-400">
+                <FiClock className="h-4 w-4 sm:h-5 sm:w-5 text-black" />
               </span>
-              <p className="text-sm text-gray-800">
+              <p className="text-xs sm:text-sm text-gray-800">
                 Today we are open from 09:00 AM
                 <br />and close at 11:00 PM
               </p>
@@ -66,25 +66,25 @@ export default function Footer() {
 
           {/* Contact details */}
           <div>
-            <h3 className="mb-4 text-base font-bold text-gray-900">
+            <h3 className="mb-2 sm:mb-4 text-sm sm:text-base font-bold text-gray-900">
               Contact details
             </h3>
-            <div className="flex flex-col gap-4">
-              <div className="flex items-start gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-400">
-                  <FiPhone className="h-5 w-5 text-black" />
+            <div className="flex flex-col gap-3 sm:gap-4">
+              <div className="flex items-start gap-2.5 sm:gap-3">
+                <span className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-amber-400">
+                  <FiPhone className="h-4 w-4 sm:h-5 sm:w-5 text-black" />
                 </span>
-                <p className="text-sm text-gray-800">
+                <p className="text-xs sm:text-sm text-gray-800">
                   Phone:
                   <br />
                   <span className="font-semibold">+91 98765 43210</span>
                 </p>
               </div>
-              <div className="flex items-start gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-400">
-                  <FiMapPin className="h-5 w-5 text-black" />
+              <div className="flex items-start gap-2.5 sm:gap-3">
+                <span className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-amber-400">
+                  <FiMapPin className="h-4 w-4 sm:h-5 sm:w-5 text-black" />
                 </span>
-                <p className="text-sm text-gray-800">
+                <p className="text-xs sm:text-sm text-gray-800">
                   MG Road, Bhopal, Madhya Pradesh 462001
                 </p>
               </div>
@@ -93,27 +93,27 @@ export default function Footer() {
 
           {/* Social media */}
           <div>
-            <h3 className="mb-4 text-base font-bold text-gray-900">
+            <h3 className="mb-2 sm:mb-4 text-sm sm:text-base font-bold text-gray-900">
               We are on social media
             </h3>
-            <div className="flex flex-col gap-4">
-              <Link href="#" className="flex items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-400">
-                  <FaInstagram className="h-5 w-5 text-black" />
+            <div className="flex flex-col gap-2.5 sm:gap-4">
+              <Link href="#" className="flex items-center gap-2.5 sm:gap-3">
+                <span className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-amber-400">
+                  <FaInstagram className="h-4 w-4 sm:h-5 sm:w-5 text-black" />
                 </span>
-                <span className="text-sm text-gray-800">instagram</span>
+                <span className="text-xs sm:text-sm text-gray-800">instagram</span>
               </Link>
-              <Link href="#" className="flex items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-400">
-                  <FaTelegramPlane className="h-5 w-5 text-black" />
+              <Link href="#" className="flex items-center gap-2.5 sm:gap-3">
+                <span className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-amber-400">
+                  <FaTelegramPlane className="h-4 w-4 sm:h-5 sm:w-5 text-black" />
                 </span>
-                <span className="text-sm text-gray-800">telegram</span>
+                <span className="text-xs sm:text-sm text-gray-800">telegram</span>
               </Link>
-              <Link href="#" className="flex items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-400">
-                  <FaWhatsapp className="h-5 w-5 text-black" />
+              <Link href="#" className="flex items-center gap-2.5 sm:gap-3">
+                <span className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-amber-400">
+                  <FaWhatsapp className="h-4 w-4 sm:h-5 sm:w-5 text-black" />
                 </span>
-                <span className="text-sm text-gray-800">whatsapp</span>
+                <span className="text-xs sm:text-sm text-gray-800">whatsapp</span>
               </Link>
             </div>
           </div>
@@ -121,14 +121,14 @@ export default function Footer() {
       </div>
 
       {/* Bottom orange bar */}
-      <div className="mx-auto max-w-7xl px-6 pb-2">
-        <div className="flex flex-col items-center justify-between gap-3 rounded-2xl bg-amber-400 px-6 py-4 sm:flex-row">
-          <p className="text-sm font-medium text-black">
+      <div className="mx-auto max-w-7xl px-3 sm:px-6 pb-2">
+        <div className="flex flex-col items-center justify-between gap-2.5 rounded-xl sm:rounded-2xl bg-amber-400 px-4 sm:px-6 py-3 sm:py-4 sm:flex-row text-center sm:text-left">
+          <p className="text-xs sm:text-sm font-medium text-black">
             © {new Date().getFullYear()} Lotus Hut Cafe &amp; Bistro
           </p>
           <Link
             href="/privacy-policy"
-            className="text-sm font-medium text-black hover:underline"
+            className="text-xs sm:text-sm font-medium text-black hover:underline"
           >
             Privacy Policy
           </Link>
@@ -136,7 +136,7 @@ export default function Footer() {
       </div>
 
       {/* Created with */}
-      <p className="py-4 text-center text-sm text-gray-500">
+      <p className="py-3 sm:py-4 text-center text-xs sm:text-sm text-gray-500">
         Designed And Developed by <span className="font-bold text-gray-700">Bluewebspark Technologies</span>
       </p>
     </footer>
