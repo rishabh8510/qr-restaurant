@@ -67,14 +67,13 @@ export function normalizeWebsiteSettings(raw: unknown) {
   }
   if (website.pricing && typeof website.pricing === 'object') {
     const p = website.pricing as Record<string, unknown>;
-    if (typeof p.taxPercent === 'number') base.pricing.taxPercent = p.taxPercent;
-    if (typeof p.firstOrderDiscountPercent === 'number')
-      base.pricing.firstOrderDiscountPercent = p.firstOrderDiscountPercent;
-    if (typeof p.firstOrderDiscountEnabled === 'boolean')
-      base.pricing.firstOrderDiscountEnabled = p.firstOrderDiscountEnabled;
     if (typeof p.deliveryCharge === 'number') base.pricing.deliveryCharge = p.deliveryCharge;
     if (typeof p.packingCharge === 'number') base.pricing.packingCharge = p.packingCharge;
   }
+  // Enforce 0 tax and no discount
+  base.pricing.taxPercent = 0;
+  base.pricing.firstOrderDiscountPercent = 0;
+  base.pricing.firstOrderDiscountEnabled = false;
   return base;
 }
 
@@ -186,34 +185,17 @@ export const getPublicMenu = asyncHandler(async (_req, res) => {
         image: s.image,
       })),
       items: products.map((p) => {
-        const activeOffer = getActiveOffersForProduct(offers, p.id, p.categoryId);
         const basePrice = Number(p.price);
-        const { finalPrice, savings } = applyOfferPrice(basePrice, activeOffer);
         return {
           id: p.id,
           category: p.categoryId,
           subCategory: p.subCategoryId,
           name: p.name,
-          price: finalPrice,
+          price: basePrice,
           originalPrice: basePrice,
-          oldPrice: p.oldPrice != null ? Number(p.oldPrice) : activeOffer ? basePrice : null,
-          discount: activeOffer
-            ? activeOffer.discountType === 'percentage'
-              ? `${activeOffer.discountValue}% OFF`
-              : `₹${activeOffer.discountValue} OFF`
-            : p.discount,
-          offer: activeOffer
-            ? {
-                id: activeOffer.id,
-                title: activeOffer.title,
-                description: activeOffer.description,
-                discountType: activeOffer.discountType,
-                discountValue: activeOffer.discountValue,
-                savings,
-                startDate: activeOffer.startDate,
-                endDate: activeOffer.endDate,
-              }
-            : null,
+          oldPrice: null,
+          discount: null,
+          offer: null,
           weight: p.weight || '',
           time: p.prepTime || 'N/A',
           description: p.description || '',

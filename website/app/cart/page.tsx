@@ -165,12 +165,9 @@ export default function CartPage() {
                   <span>₹{totalPrice}</span>
                 </div>
                 <div className="flex justify-between border-t border-gray-100 pt-3 text-base font-black text-gray-900">
-                  <span>Subtotal</span>
-                  <span>₹{totalPrice}</span>
+                  <span>Total Amount</span>
+                  <span className="text-amber-600">₹{totalPrice}</span>
                 </div>
-                <p className="text-xs text-gray-400">
-                  Taxes & charges calculated at checkout
-                </p>
               </div>
               <Link
                 href="/checkout"

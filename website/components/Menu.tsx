@@ -947,11 +947,6 @@ const handleLike = (e: React.MouseEvent, item: LocalMenu['items'][number]) => {
                         <span className="h-0 w-0 border-x-4 border-x-transparent border-b-[6px] border-b-red-600" />
                       </span>
                     )}
-                    {ws.showOffers && item.offer && (
-                      <span className="rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold text-white shadow-xs">
-                        {item.discount || item.offer.title || "Offer"}
-                      </span>
-                    )}
                     {item.isBestseller && (
                       <span className="rounded-full bg-amber-400 px-2.5 py-0.5 text-[10px] font-black text-black shadow-xs">
                         ★ Bestseller
@@ -982,11 +977,6 @@ const handleLike = (e: React.MouseEvent, item: LocalMenu['items'][number]) => {
                     <span className="text-lg font-black text-gray-900">
                       ₹{Number(item.price).toFixed(2)}
                     </span>
-                    {item.oldPrice != null && Number(item.oldPrice) > Number(item.price) && (
-                      <span className="text-xs font-semibold text-gray-400 line-through">
-                        ₹{Number(item.oldPrice).toFixed(2)}
-                      </span>
-                    )}
                   </div>
 
                   {item.description && (

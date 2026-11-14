@@ -107,21 +107,6 @@ export default function MenuItemDetails({ item, onClose }: MenuItemDetailsProps)
           <span className="text-2xl font-black text-gray-900">
             ₹{Number(item.price).toFixed(2)}
           </span>
-          {item.oldPrice != null && Number(item.oldPrice) > Number(item.price) && (
-            <span className="text-sm font-semibold text-gray-400 line-through">
-              ₹{Number(item.oldPrice).toFixed(2)}
-            </span>
-          )}
-          {item.offer && (
-            <Badge variant="destructive">
-              {item.offer.title || "Offer active"}
-            </Badge>
-          )}
-          {item.discount && (
-            <Badge variant="amber">
-              {String(item.discount)}
-            </Badge>
-          )}
         </div>
 
         {(item.weight || (item.time && item.time !== "N/A")) && (
