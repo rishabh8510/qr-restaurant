@@ -491,9 +491,9 @@ class OrderService {
             throw new errors_1.ForbiddenError('You are not assigned to this order');
         }
         const allowed = {
-            pending: ['confirmed', 'cancelled'],
-            confirmed: ['preparing', 'cancelled'],
-            preparing: ['ready', 'cancelled'],
+            pending: ['confirmed', 'preparing', 'ready', 'completed', 'cancelled'],
+            confirmed: ['preparing', 'ready', 'completed', 'cancelled'],
+            preparing: ['ready', 'completed', 'cancelled'],
             ready: ['completed', 'cancelled'],
             completed: [],
             cancelled: [],
@@ -502,9 +502,9 @@ class OrderService {
             throw new errors_1.BadRequestError(`Cannot transition from ${order.status} to ${status}`);
         }
         order.status = status;
-        if (status === 'confirmed' && !order.assignedStaffId) {
+        if ((status === 'confirmed' || status === 'completed') && !order.assignedStaffId) {
             order.assignedStaffId = actorId;
-            order.acceptedAt = new Date();
+            order.acceptedAt = order.acceptedAt || new Date();
         }
         await order.save();
         (0, socket_1.emitToStaff)('order:updated', order.toJSON());

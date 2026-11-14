@@ -572,9 +572,9 @@ export class OrderService {
     }
 
     const allowed: Record<string, OrderStatus[]> = {
-      pending: ['confirmed', 'cancelled'],
-      confirmed: ['preparing', 'cancelled'],
-      preparing: ['ready', 'cancelled'],
+      pending: ['confirmed', 'preparing', 'ready', 'completed', 'cancelled'],
+      confirmed: ['preparing', 'ready', 'completed', 'cancelled'],
+      preparing: ['ready', 'completed', 'cancelled'],
       ready: ['completed', 'cancelled'],
       completed: [],
       cancelled: [],
@@ -585,9 +585,9 @@ export class OrderService {
     }
 
     order.status = status;
-    if (status === 'confirmed' && !order.assignedStaffId) {
+    if ((status === 'confirmed' || status === 'completed') && !order.assignedStaffId) {
       order.assignedStaffId = actorId;
-      order.acceptedAt = new Date();
+      order.acceptedAt = order.acceptedAt || new Date();
     }
     await order.save();
 
