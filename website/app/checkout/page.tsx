@@ -4,12 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   FiArrowLeft,
-  FiTruck,
   FiHome,
-  FiCreditCard,
-  FiSmartphone,
-  FiDollarSign,
-  FiGlobe,
   FiCheckCircle,
   FiLock,
 } from "react-icons/fi";
@@ -17,30 +12,16 @@ import { useCart } from "@/context/CartContext";
 import { placeOrder, quoteOrder, OrderQuote } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 
-type OrderType = "delivery" | "dining" | "pickup";
-type PaymentMethod = "cash" | "card" | "upi" | "online";
+type OrderType = "dining" | "pickup";
 
 const ORDER_TYPES: {
   value: OrderType;
   label: string;
   desc: string;
-  icon: typeof FiTruck;
+  icon: typeof FiHome;
 }[] = [
-  { value: "delivery", label: "Delivery", desc: "Get it at your door", icon: FiTruck },
   { value: "dining", label: "Dine-in", desc: "Eat at restaurant", icon: FiHome },
-  { value: "pickup", label: "Pickup", desc: "Collect yourself", icon: FiCheckCircle },
-];
-
-const PAYMENTS: {
-  value: PaymentMethod;
-  label: string;
-  desc: string;
-  icon: typeof FiDollarSign;
-}[] = [
-  { value: "cash", label: "Cash", desc: "Pay on delivery / counter", icon: FiDollarSign },
-  { value: "upi", label: "UPI", desc: "GPay, PhonePe, Paytm", icon: FiSmartphone },
-  { value: "card", label: "Card", desc: "Debit / Credit card", icon: FiCreditCard },
-  { value: "online", label: "Online", desc: "Net banking / wallet", icon: FiGlobe },
+  { value: "pickup", label: "Takeaway", desc: "Collect & take away", icon: FiCheckCircle },
 ];
 
 function BillSummary({
@@ -79,10 +60,9 @@ export default function CheckoutPage() {
   const { cartItems, totalPrice, clearCart, tableNumber, setTableNumber } = useCart();
   const { isLoggedIn, token, openLoginModal, user } = useAuth();
 
-  const [step, setStep] = useState<"type" | "payment" | "done">("type");
+  const [isDone, setIsDone] = useState(false);
   const [orderType, setOrderType] = useState<OrderType>(() => (tableNumber ? "dining" : "dining"));
   const [currentTable, setCurrentTable] = useState<string>(() => tableNumber || "");
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
 
   const [name, setName] = useState<string>(() => user?.name ?? "");
   const [phone, setPhone] = useState<string>(() => user?.phone ?? "");
@@ -169,7 +149,7 @@ export default function CheckoutPage() {
           Login Required to Checkout
         </h2>
         <p className="mx-auto mt-2 max-w-xs text-xs text-gray-500">
-          Please sign in with your mobile number to view payment options, choose your table, and place your order.
+          Please sign in with your mobile number to choose your table and place your order.
         </p>
         <button
           type="button"
@@ -182,7 +162,7 @@ export default function CheckoutPage() {
     );
   }
 
-  if (cartItems.length === 0 && step !== "done") {
+  if (cartItems.length === 0 && !isDone) {
     return (
       <section className="mx-auto w-full max-w-lg px-4 py-16 text-center">
         <p className="text-lg font-semibold text-gray-700">Cart is empty</p>
@@ -214,7 +194,7 @@ export default function CheckoutPage() {
           customerName: name.trim() || undefined,
           customerPhone: phone.trim() || undefined,
           orderType,
-          paymentMethod,
+          paymentMethod: "cash",
           notes: notes || undefined,
           items: cartItems.map((i) => ({
             productId: String(i.id),
@@ -228,7 +208,7 @@ export default function CheckoutPage() {
       );
       setOrderNumber(order.orderNumber || order.id);
       clearCart();
-      setStep("done");
+      setIsDone(true);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Order failed");
     } finally {
@@ -248,64 +228,27 @@ export default function CheckoutPage() {
         Back to cart
       </Link>
 
-      {step !== "done" && (
-        <div className="mb-6 flex items-center gap-2">
-          <div
-            className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
-              step === "type" ? "bg-amber-400 text-black" : "bg-green-500 text-white"
-            }`}
-          >
-            {step === "type" ? "1" : "✓"}
-          </div>
-          <div className="h-0.5 flex-1 bg-gray-200">
-            <div
-              className={`h-full transition-all ${
-                step === "payment" ? "w-full bg-amber-400" : "w-0"
-              }`}
-            />
-          </div>
-          <div
-            className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
-              step === "payment" ? "bg-amber-400 text-black" : "bg-gray-200 text-gray-600"
-            }`}
-          >
-            2
-          </div>
-        </div>
-      )}
-
-      {step === "type" && (
+      {!isDone ? (
         <div className="space-y-6">
-          {/* Quick OTP login banner */}
-          {!isLoggedIn && (
-            <div className="flex items-center justify-between rounded-2xl bg-amber-50 border border-amber-200 p-4">
-              <div>
-                <p className="text-xs font-black uppercase tracking-wider text-amber-900">
-                  Save your order & track status
-                </p>
-                <p className="text-xs text-amber-700">
-                  Login in 5 seconds with WhatsApp / SMS OTP
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => openLoginModal()}
-                className="rounded-xl bg-amber-400 px-3.5 py-1.5 text-xs font-bold text-black shadow-xs hover:bg-amber-500 cursor-pointer"
-              >
-                Login
-              </button>
-            </div>
-          )}
+          <div>
+            <h1 className="text-2xl font-black tracking-tight text-gray-900">
+              Checkout
+            </h1>
+            <p className="mt-1 text-xs text-gray-500">
+              Confirm your details and place your order directly
+            </p>
+          </div>
 
+          {/* Order Type Selection: Dine-in or Takeaway */}
           <div>
             <p className="mb-3 text-sm font-bold text-gray-800">Choose order type</p>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3">
               {ORDER_TYPES.map(({ value, label, desc, icon: Icon }) => (
                 <button
                   key={value}
                   type="button"
                   onClick={() => setOrderType(value)}
-                  className={`flex flex-col items-center rounded-2xl border-2 p-4 text-center transition ${
+                  className={`flex flex-col items-center rounded-2xl border-2 p-4 text-center transition cursor-pointer ${
                     orderType === value
                       ? "border-amber-400 bg-amber-50 shadow-sm"
                       : "border-gray-200 bg-white hover:border-amber-200"
@@ -382,79 +325,14 @@ export default function CheckoutPage() {
 
           <button
             type="button"
-            onClick={() => setStep("payment")}
-            className="w-full rounded-xl bg-amber-400 py-3.5 text-sm font-bold text-black shadow-sm transition hover:bg-amber-500"
-          >
-            Continue to payment
-          </button>
-        </div>
-      )}
-
-      {step === "payment" && (
-        <div className="mt-8 space-y-6">
-          <button
-            type="button"
-            onClick={() => setStep("type")}
-            className="text-sm font-medium text-gray-500 hover:text-gray-800"
-          >
-            ← Change order type
-          </button>
-
-          <div className="rounded-xl bg-gray-50 px-4 py-3 text-sm">
-            Order type:{" "}
-            <span className="font-bold capitalize text-gray-900">{orderType}</span>
-          </div>
-
-          <BillSummary quote={quote} quoteLoading={quoteLoading} />
-
-          <div>
-            <p className="mb-3 text-sm font-bold text-gray-800">Payment method</p>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {PAYMENTS.map(({ value, label, desc, icon: Icon }) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => setPaymentMethod(value)}
-                  className={`flex items-start gap-3 rounded-2xl border-2 p-4 text-left transition ${
-                    paymentMethod === value
-                      ? "border-amber-400 bg-amber-50 shadow-sm"
-                      : "border-gray-200 bg-white hover:border-amber-200"
-                  }`}
-                >
-                  <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
-                      paymentMethod === value
-                        ? "bg-amber-400 text-black"
-                        : "bg-gray-100 text-gray-500"
-                    }`}
-                  >
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <span className="block text-sm font-bold text-gray-900">{label}</span>
-                    <span className="mt-0.5 block text-xs text-gray-500">{desc}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {error && (
-            <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>
-          )}
-
-          <button
-            type="button"
             disabled={loading}
             onClick={handlePlaceOrder}
-            className="w-full rounded-xl bg-amber-400 py-3.5 text-sm font-bold text-black shadow-sm transition hover:bg-amber-500 disabled:opacity-60"
+            className="w-full rounded-xl bg-amber-400 py-3.5 text-sm font-bold text-black shadow-sm transition hover:bg-amber-500 disabled:opacity-60 cursor-pointer"
           >
             {loading ? "Placing order…" : `Place Order · ₹${displayTotal}`}
           </button>
         </div>
-      )}
-
-      {step === "done" && (
+      ) : (
         <div className="mt-12 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-3xl">
             ✓
