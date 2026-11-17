@@ -39,7 +39,9 @@ export default function FloatingCart() {
               type="button"
               onClick={() => {
                 if (!isLoggedIn) {
-                  openLoginModal();
+                  openLoginModal(() => {
+                    openCart();
+                  });
                   return;
                 }
                 openCart();
